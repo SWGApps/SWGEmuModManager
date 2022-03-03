@@ -1,0 +1,55 @@
+﻿<Window x:Class="SWGEmuModManager.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SWGEmuModManager.ViewModels" 
+        d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
+        mc:Ignorable="d"
+        Title="SWGEmu Mod Manager" Height="450" Width="800" KeyDown="Window_KeyDown"
+        Style="{DynamicResource CustomWindowStyle}" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style TargetType="ListViewItem">
+            <Setter Property="FontSize" Value="10"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <MenuItem Header="_Dev">
+                <MenuItem Header="Generate Mod Manifest"></MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <Label Grid.Row="2" Grid.Column="1" Content="Available Mods" />
+
+        <!--
+        <ListBox ItemsSource="{Binding ModList}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="2" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <DataTemplate>
+
+            </DataTemplate>
+        </ListBox>
+        -->
+
+    </Grid>
+</Window>

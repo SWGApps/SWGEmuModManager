@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWGEmuModManager", "SWGEmuModManager\SWGEmuModManager.csproj", "{B82F04F0-E405-490E-8917-A76C27972C2F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B82F04F0-E405-490E-8917-A76C27972C2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B82F04F0-E405-490E-8917-A76C27972C2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B82F04F0-E405-490E-8917-A76C27972C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B82F04F0-E405-490E-8917-A76C27972C2F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {223DCFD8-FE9F-4FDF-9F71-BFDEFB1D4069}
+	EndGlobalSection
+EndGlobal
