@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:SWGEmuModManager.ViewModels" 
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="SWGEmu Mod Manager" Height="450" Width="800" MinWidth="700" MinHeight="350" KeyDown="Window_KeyDown"
-        Style="{DynamicResource CustomWindowStyle}" WindowStartupLocation="CenterScreen">
+        Title="SWGEmu Mod Manager" Height="450" Width="800" MinWidth="700" MinHeight="350"
+        Style="{DynamicResource CustomWindowStyle}" WindowStartupLocation="CenterScreen" Initialized="Window_Initialized">
 
     <Window.Resources>
         <Style TargetType="ListViewItem">
@@ -29,6 +29,9 @@
         </Grid.ColumnDefinitions>
 
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <MenuItem Header="_Config">
+                <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
+            </MenuItem>
             <MenuItem Header="_Dev">
                 <MenuItem Header="Generate Mod Manifest" Command="{Binding Path=GenerateModManifestMenuItem}"></MenuItem>
             </MenuItem>
@@ -65,7 +68,6 @@
                                     <Image Grid.Column="0" Source="{Binding BannerUrl}"/>
 
                                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
-                                        <!--<TextBlock Text="{Binding Id}"/>-->
                                         <TextBlock Text="{Binding Name}"/>
                                         <TextBlock Text="{Binding Description}"/>
                                         <TextBlock Text="{Binding Author}"/>
@@ -75,11 +77,16 @@
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
-                                        <Button Width="125" Height="35" Margin="0 0 0 5">Download</Button>
-                                        <Button Width="125" Height="35">View Mod</Button>
-                                        <TextBlock Margin="0 5 0 0" HorizontalAlignment="Center" Text="{Binding Downloads}"/>
-                                    </StackPanel>
+                                        <!-- Get data context of ScrollViewer and then bind button -->
+                                        <!-- Command Parameter is in the data template's data context -->
+                                        <Button Width="125" Height="25" Margin="0 0 0 5" Command="{Binding Path=DataContext.DownloadModButton, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Id}">Download</Button>
 
+                                        <Button Width="125" Height="25">View Mod</Button>
+                                        <TextBlock Margin="0 5 0 0" HorizontalAlignment="Center" Text="{Binding Downloads}"/>
+                                        <ProgressBar Width="125" Height="15" Margin="0 5 0 0" Value="{Binding Path=DataContext.ProgressBarPercentage, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"></ProgressBar>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </Grid>

@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Toolkit.Mvvm.Input;
+using SWGEmuModManager.Models;
 using SWGEmuModManager.Util;
 
 namespace SWGEmuModManager.ViewModels
@@ -10,47 +9,62 @@ namespace SWGEmuModManager.ViewModels
     internal class MainWindowViewModel : MainWindowViewModelProperties
     {
         public IAsyncRelayCommand GenerateModManifestMenuItem { get; }
-        
+        public IRelayCommand SetSwgDirectoryMenuItem { get; set; }
+        public IAsyncRelayCommand DownloadModButton { get; }
 
         public MainWindowViewModel()
         {
             Task.Run(() => Initialize());
-            GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifest);
+            GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifestAsync);
+            SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
+            DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
+
+            MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
         }
 
         private async Task Initialize()
         {
-            List<Mod> mods = await ApiHandler.GetMods();
-            List<ModsDisplay> modsResponse = new();
-
-            mods.ForEach(mod =>
-            {
-                modsResponse.Add(new ModsDisplay()
-                {
-                    Id = mod.Id,
-                    Name = mod.Name,
-                    BannerUrl = mod.BannerUrl,
-                    Description = mod.Description,
-                    Author = $"Author: {mod.Author}",
-                    Version = $"Version: {mod.Version}",
-                    Size = $"Size: {UnitConversion.ToSize((long)mod.Size!, UnitConversion.SizeUnits.MB)}MB",
-                    Downloads = $"Total Downloads: {mod.Downloads}",
-                    Released = $"Released: {mod.Released.ToString("D", DateTimeFormatInfo.InvariantInfo)}"
-                });
-            });
-
-            ModList = modsResponse;
+            ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetMods());
         }
 
-        private async Task GenerateModManifest()
+        private async Task GenerateModManifestAsync()
         {
             using FolderBrowserDialog dialog = new();
             DialogResult result = dialog.ShowDialog();
 
             if (result.ToString().Trim() == "OK")
             {
-                await ManifestGenerator.GenerateModManifest(dialog.SelectedPath.Replace("\\", "/"));
+                await ManifestGenerator.GenerateModManifest(modsDirectory: dialog.SelectedPath.Replace(oldValue: "\\", newValue: "/"));
             }
+        }
+
+        private void SetSwgDirectory()
+        {
+            MainWindowModel.SetSwgDirectory();
+        }
+
+        private async Task GetModDataAsync(int id)
+        {
+            InstallRequestResponse response = await ApiHandler.InstallMod(id);
+
+            ConfigFile config = ConfigFile.GetConfig()!;
+
+            if (!string.IsNullOrEmpty(config.SwgDirectory) && 
+                !string.IsNullOrEmpty(response.DownloadUrl) && 
+                !string.IsNullOrEmpty(response.Archive))
+            {
+                await MainWindowModel.InstallMod(response.DownloadUrl, response.Archive);
+            }
+            else
+            {
+                MessageBox.Show(text: "No SWG directory set! Please set your SWG location in Config -> Set SWG Directory and try again.",
+                    caption: "No SWG Directory Set", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void DownloadProgressUpdated(long bytesReceived, long totalBytesToReceive, int progressPercentage)
+        {
+            ProgressBarPercentage = progressPercentage;
         }
     }
 }

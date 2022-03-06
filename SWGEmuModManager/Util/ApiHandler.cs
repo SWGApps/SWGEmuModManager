@@ -28,5 +28,23 @@ namespace SWGEmuModManager.Util
                 return new List<Mod>();
             }
         }
+
+        public static async Task<InstallRequestResponse> InstallMod(int id)
+        {
+            var client = new HttpClient();
+
+            try
+            {
+                using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mod/Install/{id}"));
+
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadFromJsonAsync<InstallRequestResponse>() ?? new InstallRequestResponse();
+            }
+            catch
+            {
+                return new InstallRequestResponse();
+            }
+        }
     }
 }

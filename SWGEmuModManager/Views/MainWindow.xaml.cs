@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Input;
-using SWGEmuModManager.Util;
+﻿using SWGEmuModManager.Models;
 using SWGEmuModManager.ViewModels;
 
 namespace SWGEmuModManager.Views
@@ -9,7 +6,7 @@ namespace SWGEmuModManager.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {
@@ -18,9 +15,9 @@ namespace SWGEmuModManager.Views
             DataContext = new MainWindowViewModel();
         }
 
-        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void Window_Initialized(object sender, System.EventArgs e)
         {
-
+            await ConfigFile.GenerateNewConfig();
         }
     }
 }

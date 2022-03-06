@@ -74,14 +74,54 @@ namespace SWGEmuModManager.ViewModels
         public string? Released { get; set; }
     }
 
+    public class InstallRequestResponse
+    {
+        [JsonPropertyName("result")]
+        public string? Result { get; set; }
+
+        [JsonPropertyName("reason")]
+        public string? Reason { get; set; }
+
+        [JsonPropertyName("downloadUrl")]
+        public string? DownloadUrl { get; set; }
+
+        [JsonPropertyName("fileList")]
+        public List<string>? FileList { get; set; }
+
+        [JsonPropertyName("archive")]
+        public string? Archive { get; set; }
+
+        [JsonPropertyName("conflictList")]
+        public List<int>? ConflictList { get; set; }
+    }
+
+    public class UninstallRequestResponse
+    {
+        [JsonPropertyName("result")]
+        public string? Result { get; set; }
+
+        [JsonPropertyName("reason")]
+        public string? Reason { get; set; }
+
+        [JsonPropertyName("fileList")]
+        public List<string>? FileList { get; set; }
+    }
+
     internal class MainWindowViewModelProperties : ObservableObject
     {
         private List<ModsDisplay>? _modList;
+        private int? _progressBarPercentage;
 
         public List<ModsDisplay>? ModList
         {
             get => _modList;
             set => SetProperty(ref _modList, value);
+        }
+
+        public int? ProgressBarPercentage
+        {
+            get => _progressBarPercentage;
+            set => SetProperty(ref _progressBarPercentage, value);
         }
     }
 }
