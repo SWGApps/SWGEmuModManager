@@ -15,8 +15,6 @@ namespace SWGEmuModManager.Util
         {
             string relativePath = Path.GetRelativePath(modsDirectory, directory);
 
-            string modName = "";
-
             if (relativePath.Contains('_')) return relativePath.Replace("_", " ");
             if (relativePath.Contains('-')) return relativePath.Replace("-", " ");
 

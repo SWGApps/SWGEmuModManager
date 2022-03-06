@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SWGEmuModManager.ViewModels" 
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="SWGEmu Mod Manager" Height="450" Width="800" KeyDown="Window_KeyDown"
+        Title="SWGEmu Mod Manager" Height="450" Width="800" MinWidth="700" MinHeight="350" KeyDown="Window_KeyDown"
         Style="{DynamicResource CustomWindowStyle}" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -19,7 +19,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="20" />
-            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
@@ -31,25 +30,62 @@
 
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
             <MenuItem Header="_Dev">
-                <MenuItem Header="Generate Mod Manifest" Command="{Binding GenerateModManifestMenuItem}"></MenuItem>
+                <MenuItem Header="Generate Mod Manifest" Command="{Binding Path=GenerateModManifestMenuItem}"></MenuItem>
             </MenuItem>
         </Menu>
 
-        <Label Grid.Row="2" Grid.Column="1" Content="Available Mods" />
+        <ScrollViewer Grid.Column="1" Grid.Row="2">
+            <ItemsControl ItemsSource="{Binding Path=ModList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DataTemplate.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="12"/>
+                            </Style>
+                        </DataTemplate.Resources>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="125" />
+                            </Grid.RowDefinitions>
 
-        <!--
-        <ListBox ItemsSource="{Binding ModList}">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="2" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
+                            <Border Margin="5" Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="145" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-            <DataTemplate>
+                                    <Image Grid.Column="0" Source="{Binding BannerUrl}"/>
 
-            </DataTemplate>
-        </ListBox>
-        -->
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
+                                        <!--<TextBlock Text="{Binding Id}"/>-->
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Description}"/>
+                                        <TextBlock Text="{Binding Author}"/>
+                                        <TextBlock Text="{Binding Version}"/>
+                                        <TextBlock Text="{Binding Size}"/>
+                                        <TextBlock Text="{Binding Released}"/>
+                                    </StackPanel>
 
+                                    <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
+                                        <Button Width="125" Height="35" Margin="0 0 0 5">Download</Button>
+                                        <Button Width="125" Height="35">View Mod</Button>
+                                        <TextBlock Margin="0 5 0 0" HorizontalAlignment="Center" Text="{Binding Downloads}"/>
+                                    </StackPanel>
+
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Window>
