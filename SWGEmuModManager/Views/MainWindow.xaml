@@ -31,7 +31,7 @@
 
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
             <MenuItem Header="_Dev">
-                <MenuItem Header="Generate Mod Manifest"></MenuItem>
+                <MenuItem Header="Generate Mod Manifest" Command="{Binding GenerateModManifestMenuItem}"></MenuItem>
             </MenuItem>
         </Menu>
 

@@ -20,25 +20,7 @@ namespace SWGEmuModManager.Views
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) &&
-                Keyboard.IsKeyDown(Key.LeftAlt) &&
-                Keyboard.IsKeyDown(Key.F1))
-            {
-                using var dialog = new FolderBrowserDialog();
-                DialogResult result = dialog.ShowDialog();
-                string directory = "";
 
-                if (result.ToString().Trim() == "Cancel")
-                {
-                    Close();
-                }
-                else if (result.ToString().Trim() == "OK")
-                {
-                    directory = dialog.SelectedPath.Replace("\\", "/");
-                }
-
-                ManifestGenerator.GenerateModManifest(directory);
-            }
         }
     }
 }

@@ -13,6 +13,9 @@ namespace SWGEmuModManager.ViewModels
         [JsonPropertyName("name")]
         public string? Name { get; set; }
 
+        [JsonPropertyName("bannerUrl")]
+        public string? BannerUrl { get; set; }
+
         [JsonPropertyName("description")]
         public string? Description { get; set; }
 
@@ -31,14 +34,14 @@ namespace SWGEmuModManager.ViewModels
         [JsonPropertyName("released")]
         public DateTime? Released { get; set; }
 
-        [JsonPropertyName("rating")]
-        public int? Rating { get; set; }
+        [JsonPropertyName("archive")]
+        public string? Archive { get; set; }
 
         [JsonPropertyName("fileList")]
         public List<string>? FileList { get; set; }
 
         [JsonPropertyName("conflictList")]
-        public List<Mod>? ConflictList { get; set; }
+        public List<int>? ConflictList { get; set; }
     }
 
     internal class MainWindowViewModelProperties : ObservableObject

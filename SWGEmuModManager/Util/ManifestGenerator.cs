@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using SWGEmuModManager.ViewModels;
 
 namespace SWGEmuModManager.Util
@@ -23,8 +25,16 @@ namespace SWGEmuModManager.Util
 
         private static ulong GetModSize(string directory)
         {
-            return (ulong)Directory.GetFiles(directory, "*", SearchOption.AllDirectories)
+            File.Move(Path.Join(directory, "modinfo.txt"), 
+                Path.Join(Directory.GetParent(directory)!.FullName, "modinfo.txt"));
+
+            ulong size = (ulong)Directory.GetFiles(directory, "*", SearchOption.AllDirectories)
                 .Sum(file => (new FileInfo(file).Length));
+
+            File.Move(Path.Join(Directory.GetParent(directory)!.FullName, "modinfo.txt"),
+                Path.Join(directory, "modinfo.txt"));
+
+            return size;
         }
 
         private static List<string> GetFileList(string directory)
@@ -37,7 +47,7 @@ namespace SWGEmuModManager.Util
             {
                 if (!file.Contains("modinfo.txt"))
                 {
-                    fileList.Add(file.Replace("\\", "/"));
+                    fileList.Add(Path.GetRelativePath(directory, file).Replace("\\", "/"));
                 }
             });
 
@@ -46,7 +56,18 @@ namespace SWGEmuModManager.Util
 
         private static string GetModInfo(string[] modInfo, int index) => modInfo[index].Split("=")[1];
 
-        internal static void GenerateModManifest(string modsDirectory)
+        private static async Task<string> CreateZipFile(string directory, string modName)
+        {
+            string archiveName = $"{Path.GetDirectoryName(directory)!}/{modName.Replace(" ", "")}.zip";
+
+            File.Move(Path.Join(directory, "modinfo.txt"), Path.Join(Directory.GetParent(directory)!.FullName, "modinfo.txt"));
+            await Task.Run(() => ZipFile.CreateFromDirectory(directory, archiveName));
+            File.Move(Path.Join(Directory.GetParent(directory)!.FullName, "modinfo.txt"), Path.Join(directory, "modinfo.txt"));
+
+            return Path.GetFileName(archiveName);
+        }
+
+        internal static async Task GenerateModManifest(string modsDirectory)
         {
             // Return if user cancels
             if (string.IsNullOrEmpty(modsDirectory)) return;
@@ -58,29 +79,32 @@ namespace SWGEmuModManager.Util
             List<Mod> mods = new();
 
             int i = 0;
-            modDirectories.ForEach(directory =>
+            foreach (string directory in modDirectories)
             {
-                string[] modInfo = File.ReadAllLines($"{directory}/modinfo.txt");
+                string[] modInfo = await File.ReadAllLinesAsync($"{directory}/modinfo.txt");
+
+                string modName = GetModName(modsDirectory, directory);
 
                 mods.Add(new Mod()
                 {
                     Id = i,
-                    Name = GetModName(modsDirectory, directory),
-                    Description = GetModInfo(modInfo, 0),
-                    Author = GetModInfo(modInfo, 1),
-                    Version = GetModInfo(modInfo, 2),
+                    Name = modName,
+                    BannerUrl = GetModInfo(modInfo, 0),
+                    Description = GetModInfo(modInfo, 1),
+                    Author = GetModInfo(modInfo, 2),
+                    Version = GetModInfo(modInfo, 3),
                     Size = GetModSize(directory),
                     Downloads = 0,
                     Released = DateTime.Now,
-                    Rating = 0,
+                    Archive = await CreateZipFile(directory, modName),
                     FileList = GetFileList(directory),
-                    ConflictList = new List<Mod>()
+                    ConflictList = new List<int>()
                 });
 
                 i++;
-            });
+            }
 
-            File.WriteAllText($"{Microsoft.VisualBasic.FileIO.SpecialDirectories.Desktop}/mods.json",
+            await File.WriteAllTextAsync($"{Microsoft.VisualBasic.FileIO.SpecialDirectories.Desktop}/mods.json",
                 JsonSerializer.Serialize(mods, new JsonSerializerOptions() { WriteIndented = true }));
         }
     }
