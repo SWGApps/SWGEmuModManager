@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SWGEmuModManager.ViewModels" 
+        xmlns:uc="clr-namespace:SWGEmuModManager.Views.UserControls" 
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="SWGEmu Mod Manager" Height="450" Width="800" MinWidth="700" MinHeight="350"
@@ -37,62 +38,7 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer Grid.Column="1" Grid.Row="2">
-            <ItemsControl ItemsSource="{Binding Path=ModList}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <DataTemplate.Resources>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="FontSize" Value="12"/>
-                            </Style>
-                        </DataTemplate.Resources>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="125" />
-                            </Grid.RowDefinitions>
+        <uc:ModList Grid.Column="1" Grid.Row="2"></uc:ModList>
 
-                            <Border Margin="5" Grid.Column="0" BorderThickness="2" BorderBrush="DarkCyan">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="200" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="145" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-
-                                    <Image Grid.Column="0" Source="{Binding BannerUrl}"/>
-
-                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
-                                        <TextBlock Text="{Binding Name}"/>
-                                        <TextBlock Text="{Binding Description}"/>
-                                        <TextBlock Text="{Binding Author}"/>
-                                        <TextBlock Text="{Binding Version}"/>
-                                        <TextBlock Text="{Binding Size}"/>
-                                        <TextBlock Text="{Binding Released}"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
-                                        <!-- Get data context of ScrollViewer and then bind button -->
-                                        <!-- Command Parameter is in the data template's data context -->
-                                        <Button Width="125" Height="25" Margin="0 0 0 5" Command="{Binding Path=DataContext.DownloadModButton, 
-                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Id}">Download</Button>
-
-                                        <Button Width="125" Height="25">View Mod</Button>
-                                        <TextBlock Margin="0 5 0 0" HorizontalAlignment="Center" Text="{Binding Downloads}"/>
-                                        <ProgressBar Width="125" Height="15" Margin="0 5 0 0" Value="{Binding Path=DataContext.ProgressBarPercentage, 
-                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"></ProgressBar>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
     </Grid>
 </Window>

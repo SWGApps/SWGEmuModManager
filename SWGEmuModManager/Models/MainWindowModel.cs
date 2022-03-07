@@ -28,11 +28,11 @@ namespace SWGEmuModManager.Models
                     Name = mod.Name,
                     BannerUrl = mod.BannerUrl,
                     Description = mod.Description,
-                    Author = $"Author: {mod.Author}",
-                    Version = $"Version: {mod.Version}",
-                    Size = $"Size: {UnitConversion.ToSize((long)mod.Size!, UnitConversion.SizeUnits.MB)}MB",
-                    Downloads = $"Total Downloads: {mod.Downloads}",
-                    Released = $"Released: {mod.Released.ToString("D", DateTimeFormatInfo.InvariantInfo)}"
+                    Author = $"{mod.Author}",
+                    Version = $"{mod.Version}",
+                    Size = $"{UnitConversion.ToSize((long)mod.Size!, UnitConversion.SizeUnits.MB)}",
+                    Downloads = $"{mod.Downloads}",
+                    Released = $"{mod.Released.ToString("d", DateTimeFormatInfo.InvariantInfo)}"
                 });
             });
 
