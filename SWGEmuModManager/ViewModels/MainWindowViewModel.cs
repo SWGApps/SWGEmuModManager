@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Toolkit.Mvvm.Input;
 using SWGEmuModManager.Models;
@@ -47,13 +49,20 @@ namespace SWGEmuModManager.ViewModels
         {
             InstallRequestResponse response = await ApiHandler.InstallMod(id);
 
+            List<int> conflicts = await MainWindowModel.CheckConflictList(response.ConflictList);
+
+            conflicts.ForEach(conflict =>
+            {
+                Trace.WriteLine(conflict);
+            });
+
             ConfigFile config = ConfigFile.GetConfig()!;
 
             if (!string.IsNullOrEmpty(config.SwgDirectory) && 
                 !string.IsNullOrEmpty(response.DownloadUrl) && 
                 !string.IsNullOrEmpty(response.Archive))
             {
-                await MainWindowModel.InstallMod(response.DownloadUrl, response.Archive);
+                await MainWindowModel.DownloadMod(id, response.DownloadUrl, response.Archive);
             }
             else
             {

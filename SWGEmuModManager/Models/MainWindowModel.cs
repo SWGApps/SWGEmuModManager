@@ -93,7 +93,19 @@ namespace SWGEmuModManager.Models
             }
         }
 
-        public static async Task InstallMod(string downloadUrl, string archiveName)
+        public static async Task<List<int>> CheckConflictList(List<int>? conflictList)
+        {
+            ConfigFile config = ConfigFile.GetConfig()!;
+
+            if (config.InstalledMods is not null && config.InstalledMods.Count > 0)
+            {
+                return conflictList!.Intersect(config.InstalledMods).ToList();
+            }
+
+            return new List<int>();
+        }
+
+        public static async Task DownloadMod(int modId, string downloadUrl, string archiveName)
         {
             using HttpClient client = new();
 
@@ -113,7 +125,7 @@ namespace SWGEmuModManager.Models
 
                 await fileStream.DisposeAsync();
 
-                await UnzipMod(archiveName);
+                await UnzipMod(modId, archiveName);
             }
         }
 
@@ -147,7 +159,7 @@ namespace SWGEmuModManager.Models
             }
         }
 
-        public static async Task UnzipMod(string archiveName)
+        public static async Task UnzipMod(int modId, string archiveName)
         {
             await Task.Run(() =>
             {
@@ -163,6 +175,10 @@ namespace SWGEmuModManager.Models
 
                     File.Delete(Path.Join(config.SwgDirectory, archiveName));
                 }
+
+                config!.InstalledMods!.Add(modId);
+
+                ConfigFile.SetConfig(config);
             });
         }
     }
