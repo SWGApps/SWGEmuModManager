@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="SWGEmuModManager.Views.UserControls.ModList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:SWGEmuModManager.Views.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <!-- #region WindowResources -->
+    <UserControl.Resources>
+
+        <Style x:Key="ModBannerImage" TargetType="{x:Type Image}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Stretch" Value="UniformToFill"/>
+        </Style>
+
+        <Style x:Key="ModTitle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="Bahnschrift Condensed"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+
+        <Style x:Key="ModDetailsPrefix" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="#66FFFFFF"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+        </Style>
+
+        <Style x:Key="ModDetailsIcon" TargetType="{x:Type fa:FontAwesome}">
+            <Setter Property="Foreground" Value="#66FFFFFF"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0 0 5 0"/>
+        </Style>
+
+        <Style x:Key="ModDetailsValue" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="#99FFFFFF"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style x:Key="ModDetailsStack" TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="14 0 0 0"/>
+        </Style>
+
+    </UserControl.Resources>
+    <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding Path=ModList}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <DataTemplate.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="FontFamily" Value="Bahnschrift"/>
+                        </Style>
+                    </DataTemplate.Resources>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="145" />
+                        </Grid.RowDefinitions>
+
+                        <Border Margin="0 5" Grid.Column="0" BorderThickness="1" BorderBrush="DarkCyan">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="125" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+
+                                <Image x:Name="ModBanner" Grid.Column="0" Source="{Binding BannerUrl}" Style="{DynamicResource ModBannerImage}" />
+
+                                <StackPanel Grid.Column="1" Margin="14 10">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{DynamicResource ModTitle}" Text="{Binding Name}"/>
+                                        <StackPanel Style="{DynamicResource ModDetailsStack}" VerticalAlignment="Bottom" Margin="4 0 0 2">
+                                            <TextBlock Style="{DynamicResource ModDetailsPrefix}">v</TextBlock>
+                                            <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Version}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0 2">
+                                            <StackPanel Style="{DynamicResource ModDetailsStack}" Margin="0">
+                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="User"/>
+                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Author}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Style="{DynamicResource ModDetailsStack}">
+                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="Database" />
+                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Size, StringFormat={}{0}MB}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Style="{DynamicResource ModDetailsStack}">
+                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="Download" />
+                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Downloads}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Style="{DynamicResource ModDetailsStack}">
+                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="Calendar" />
+                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Released}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <!-- Get data context of ScrollViewer and then bind button -->
+                                    <!-- Command Parameter is in the data template's data context -->
+                                    <Button Width="Auto" Height="25" Command="{Binding Path=DataContext.DownloadModButton, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Id}">Install</Button>
+
+                                    <Button Width="Auto" Height="25">Details</Button>
+                                    <ProgressBar Width="125" Height="5" Value="{Binding Path=DataContext.ProgressBarPercentage, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"></ProgressBar>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>
