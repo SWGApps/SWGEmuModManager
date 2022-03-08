@@ -37,11 +37,8 @@ namespace SWGEmuModManager.Models
 
             await using StreamWriter sw = new(path: _configFile);
 
-            try
-            {
-                await sw.WriteAsync(JsonSerializer.Serialize(config, 
-                    new JsonSerializerOptions() { WriteIndented = true }));
-            } catch { }
+            await sw.WriteAsync(JsonSerializer.Serialize(config, 
+                new JsonSerializerOptions() { WriteIndented = true }));
         }
 
         public static void SetConfig(ConfigFile config)

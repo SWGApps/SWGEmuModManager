@@ -11,40 +11,26 @@ namespace SWGEmuModManager.Util
     {
         private static readonly string _apiUrl = "https://localhost:7193";
 
-        public static async Task<List<Mod>> GetMods()
+        public static async Task<List<Mod>> GetModsAsync()
         {
             var client = new HttpClient();
 
-            try
-            {
-                using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mods"));
+            using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mods"));
 
-                response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-                return await response.Content.ReadFromJsonAsync<List<Mod>>() ?? new List<Mod>();
-            }
-            catch
-            {
-                return new List<Mod>();
-            }
+            return await response.Content.ReadFromJsonAsync<List<Mod>>() ?? new List<Mod>();
         }
 
-        public static async Task<InstallRequestResponse> InstallMod(int id)
+        public static async Task<InstallRequestResponse> InstallModAsync(int id)
         {
             var client = new HttpClient();
 
-            try
-            {
-                using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mod/Install/{id}"));
+            using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mod/Install/{id}"));
 
-                response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-                return await response.Content.ReadFromJsonAsync<InstallRequestResponse>() ?? new InstallRequestResponse();
-            }
-            catch
-            {
-                return new InstallRequestResponse();
-            }
+            return await response.Content.ReadFromJsonAsync<InstallRequestResponse>() ?? new InstallRequestResponse();
         }
     }
 }

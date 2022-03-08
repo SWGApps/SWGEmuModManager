@@ -18,22 +18,22 @@ namespace SWGEmuModManager.ViewModels
 
         public MainWindowViewModel()
         {
-            Task.Run(Initialize);
+            Task.Run(InitializeAsync);
 
             GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifestAsync);
             SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
             DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
 
             MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
-            MainWindowModel.OnInstallStarted += InstallStarted;
+            ZipArchiveExtension.OnInstallStarted += InstallStarted;
             ZipArchiveExtension.OnInstallProgressUpdated += InstallProgressUpdated;
             ZipArchiveExtension.OnInstallDone += InstallDone;
         }
 
-        private async Task Initialize()
+        private async Task InitializeAsync()
         {
             ProgressBarVisibility = Visibility.Collapsed;
-            ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetMods());
+            ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
         }
 
         private async Task GenerateModManifestAsync()
@@ -43,7 +43,7 @@ namespace SWGEmuModManager.ViewModels
 
             if (result.ToString().Trim() == "OK")
             {
-                await ManifestGenerator.GenerateModManifest(modsDirectory: dialog.SelectedPath.Replace(oldValue: "\\", newValue: "/"));
+                await ManifestGenerator.GenerateModManifestAsync(modsDirectory: dialog.SelectedPath.Replace(oldValue: "\\", newValue: "/"));
             }
         }
 
@@ -54,7 +54,7 @@ namespace SWGEmuModManager.ViewModels
 
         private async Task GetModDataAsync(int id)
         {
-            InstallRequestResponse response = await ApiHandler.InstallMod(id);
+            InstallRequestResponse response = await ApiHandler.InstallModAsync(id);
 
             List<int> conflicts = MainWindowModel.CheckConflictList(response.ConflictList);
 
@@ -71,7 +71,7 @@ namespace SWGEmuModManager.ViewModels
             {
                 ProgressBarVisibility = Visibility.Visible;
                 ProgressBarStatusLabel = $"Downloading {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
-                await MainWindowModel.DownloadMod(id, response.DownloadUrl, response.Archive);
+                await MainWindowModel.DownloadModAsync(id, response.DownloadUrl, response.Archive);
             }
             else
             {

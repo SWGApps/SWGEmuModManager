@@ -56,33 +56,9 @@ internal class ManifestGenerator
 
     private static string GetModInfo(string[] modInfo, int index) => modInfo[index].Split("=")[1];
 
-    private static async Task<string> CreateZipFile(string directory, string modName)
-    {
-        try
-        {
-            string archiveName = $"{Path.GetDirectoryName(directory)!}/{modName.Replace(" ", "")}.zip";
 
-            File.Move(sourceFileName: Path.Join(directory, "modinfo.txt"),
-                destFileName: Path.Join(Directory.GetParent(directory)!.FullName, "modinfo.txt"));
 
-            if (File.Exists(archiveName)) File.Delete(archiveName);
-
-            await Task.Run(() => ZipFile.CreateFromDirectory(directory, archiveName));
-
-            File.Move(sourceFileName: Path.Join(Directory.GetParent(directory)!.FullName, "modinfo.txt"),
-                destFileName: Path.Join(directory, "modinfo.txt"));
-
-            return Path.GetFileName(archiveName);
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message);
-        }
-
-        return "";
-    }
-
-    private static async Task<bool> HasFileConflict(string directory, string directory2)
+    private static async Task<bool> HasFileConflictAsync(string directory, string directory2)
     {
         bool hasConflict = false;
 
@@ -96,7 +72,7 @@ internal class ManifestGenerator
 
         foreach (string file in list1.Intersect(list2).ToList())
         {
-            if (!await IsFileEqual(file, directory, directory2))
+            if (!await IsFileEqualAsync(file, directory, directory2))
             {
                 hasConflict = true;
             }
@@ -105,7 +81,7 @@ internal class ManifestGenerator
         return hasConflict;
     }
 
-    private static async Task<bool> IsFileEqual(string file, string directory1, string directory2)
+    private static async Task<bool> IsFileEqualAsync(string file, string directory1, string directory2)
     {
         await Task.Run(() =>
         {
@@ -128,67 +104,60 @@ internal class ManifestGenerator
         return false;
     }
 
-    internal static async Task GenerateModManifest(string modsDirectory)
+    internal static async Task GenerateModManifestAsync(string modsDirectory)
     {
-        try
+        // Return if user cancels
+        if (string.IsNullOrEmpty(modsDirectory)) return;
+
+        // Top level directories
+        List<string> modDirectories = Directory.EnumerateDirectories(
+            modsDirectory, "*.*", SearchOption.TopDirectoryOnly).ToList();
+
+        List<Mod> mods = new();
+
+        int i = 0;
+        foreach (string directory in modDirectories)
         {
-            // Return if user cancels
-            if (string.IsNullOrEmpty(modsDirectory)) return;
+            List<int> conflictList = new();
 
-            // Top level directories
-            List<string> modDirectories = Directory.EnumerateDirectories(
-                modsDirectory, "*.*", SearchOption.TopDirectoryOnly).ToList();
-
-            List<Mod> mods = new();
-
-            int i = 0;
-            foreach (string directory in modDirectories)
+            int conflictCheckIter = 0;
+            foreach (string conflictCheckDirectory in modDirectories)
             {
-                List<int> conflictList = new();
-
-                int conflictCheckIter = 0;
-                foreach (string conflictCheckDirectory in modDirectories)
+                if (directory != conflictCheckDirectory)
                 {
-                    if (directory != conflictCheckDirectory)
+                    if (await HasFileConflictAsync(directory, conflictCheckDirectory))
                     {
-                        if (await HasFileConflict(directory, conflictCheckDirectory))
-                        {
-                            conflictList.Add(conflictCheckIter);
-                        }
+                        conflictList.Add(conflictCheckIter);
                     }
-
-                    conflictCheckIter++;
                 }
 
-                string[] modInfo = await File.ReadAllLinesAsync($"{directory}/modinfo.txt");
-
-                string modName = GetModName(modsDirectory, directory);
-
-                mods.Add(new Mod()
-                {
-                    Id = i,
-                    Name = modName,
-                    BannerUrl = GetModInfo(modInfo, 0),
-                    Description = GetModInfo(modInfo, 1),
-                    Author = GetModInfo(modInfo, 2),
-                    Version = GetModInfo(modInfo, 3),
-                    Size = GetModSize(directory),
-                    Downloads = 0,
-                    Released = DateTime.Now,
-                    Archive = await CreateZipFile(directory, modName),
-                    FileList = GetFileList(directory),
-                    ConflictList = conflictList
-                });
-
-                i++;
+                conflictCheckIter++;
             }
 
-            await File.WriteAllTextAsync(path: $"{Microsoft.VisualBasic.FileIO.SpecialDirectories.Desktop}/mods.json",
-                contents: JsonSerializer.Serialize(mods, new JsonSerializerOptions() { WriteIndented = true }));
+            string[] modInfo = await File.ReadAllLinesAsync($"{directory}/modinfo.txt");
+
+            string modName = GetModName(modsDirectory, directory);
+
+            mods.Add(new Mod()
+            {
+                Id = i,
+                Name = modName,
+                BannerUrl = GetModInfo(modInfo, 0),
+                Description = GetModInfo(modInfo, 1),
+                Author = GetModInfo(modInfo, 2),
+                Version = GetModInfo(modInfo, 3),
+                Size = GetModSize(directory),
+                Downloads = 0,
+                Released = DateTime.Now,
+                Archive = await ZipArchiveExtension.CreateZipFileAsync(directory, modName),
+                FileList = GetFileList(directory),
+                ConflictList = conflictList
+            });
+
+            i++;
         }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.StackTrace);
-        }
+
+        await File.WriteAllTextAsync(path: $"{Microsoft.VisualBasic.FileIO.SpecialDirectories.Desktop}/mods.json",
+            contents: JsonSerializer.Serialize(mods, new JsonSerializerOptions() { WriteIndented = true }));
     }
 }
