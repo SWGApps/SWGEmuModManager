@@ -13,6 +13,7 @@
     <!-- #region WindowResources -->
     <UserControl.Resources>
         <util:MathConverter x:Key="MathConverter" />
+        <util:InstallButtonConverter x:Key="InstallButtonConverter" />
 
         <Style x:Key="ModBannerImage" TargetType="{x:Type TypeName=Image}">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -129,8 +130,14 @@
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                         <!-- Get data context of ScrollViewer and then bind button -->
                                         <!-- Command Parameter is in the data template's data context -->
-                                        <Button Width="Auto" Height="25" Command="{Binding Path=DataContext.DownloadModButton, 
-                                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Path=Id}">Install</Button>
+                                        <Button Width="Auto" Height="25" Command="{Binding Path=DataContext.DownloadModButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Path=Id}">
+                                            <Button.Content>
+                                                <MultiBinding Converter="{StaticResource InstallButtonConverter}">
+                                                    <Binding Path="DataContext.InstallButtonText" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}" />
+                                                    <Binding Path="Id"></Binding>
+                                                </MultiBinding>
+                                            </Button.Content>
+                                        </Button>
 
                                         <Button Width="Auto" Height="25">Details</Button>
                                     </StackPanel>

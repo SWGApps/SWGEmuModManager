@@ -13,6 +13,7 @@ namespace SWGEmuModManager.Views
             InitializeComponent();
 
             DataContext = new MainWindowViewModel();
+
         }
 
         private async void Window_Initialized(object sender, System.EventArgs e)

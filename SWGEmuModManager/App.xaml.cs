@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using log4net;
 
 namespace SWGEmuModManager
 {
@@ -7,9 +8,19 @@ namespace SWGEmuModManager
     /// </summary>
     public partial class App
     {
+        public static readonly ILog log = LogManager.GetLogger(typeof(App));
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            log4net.Config.XmlConfigurator.Configure();
+            log.Info("Log4Net -- Logging Start");
+            base.OnStartup(e);
+        }
+
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("An unhandled exception just occurred: " + e.Exception.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+            log.Info(e.Exception.StackTrace);
+            MessageBox.Show("An unhandled exception just occurred: " + e.Exception.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
             e.Handled = true;
         }
     }

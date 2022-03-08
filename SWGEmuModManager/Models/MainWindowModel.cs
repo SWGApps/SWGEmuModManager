@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,13 +15,13 @@ namespace SWGEmuModManager.Models
     {
         public static Action<long, long, int>? OnDownloadProgressUpdated { get; set; }
 
-        public static List<ModsDisplay> SetModDisplay(List<Mod> mods)
+        public static List<MainWindowViewModelResponses.ModsDisplay> SetModDisplay(List<MainWindowViewModelResponses.Mod> mods)
         {
-            List<ModsDisplay> modsDisplay = new();
+            List<MainWindowViewModelResponses.ModsDisplay> modsDisplay = new();
 
             mods.ForEach(mod =>
             {
-                modsDisplay.Add(new ModsDisplay()
+                modsDisplay.Add(new MainWindowViewModelResponses.ModsDisplay()
                 {
                     Id = mod.Id,
                     Name = mod.Name,
@@ -105,6 +104,21 @@ namespace SWGEmuModManager.Models
             return new List<int>();
         }
 
+        public static bool ModIsInstalled(int id)
+        {
+            ConfigFile? config = ConfigFile.GetConfig();
+
+            if (config is not null && config.InstalledMods!.Count > 0)
+            {
+                if (config.InstalledMods.Any(x => x == id))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static async Task DownloadModAsync(int modId, string downloadUrl, string archiveName)
         {
             using HttpClient client = new();
@@ -166,6 +180,31 @@ namespace SWGEmuModManager.Models
                     }
                 }
             }
+        }
+
+        public static async Task UninstallMod(int id, List<string> fileList)
+        {
+            ConfigFile? config = ConfigFile.GetConfig();
+
+            await Task.Run(() =>
+            {
+                if (config is not null)
+                {
+                    if (!string.IsNullOrEmpty(config.SwgDirectory))
+                    {
+                        foreach (string file in fileList)
+                        {
+                            string filePath = Path.Join(config.SwgDirectory, file);
+
+                            if (File.Exists(filePath)) File.Delete(filePath);
+                        }
+                    }
+                }
+            });
+
+            config!.InstalledMods!.RemoveAll(mid => mid == id);
+
+            ConfigFile.SetConfig(config);
         }
     }
 }

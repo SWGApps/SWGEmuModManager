@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using SWGEmuModManager.ViewModels;
 
 namespace SWGEmuModManager.Util;
@@ -113,7 +111,7 @@ internal class ManifestGenerator
         List<string> modDirectories = Directory.EnumerateDirectories(
             modsDirectory, "*.*", SearchOption.TopDirectoryOnly).ToList();
 
-        List<Mod> mods = new();
+        List<MainWindowViewModelResponses.Mod> mods = new();
 
         int i = 0;
         foreach (string directory in modDirectories)
@@ -138,7 +136,7 @@ internal class ManifestGenerator
 
             string modName = GetModName(modsDirectory, directory);
 
-            mods.Add(new Mod()
+            mods.Add(new MainWindowViewModelResponses.Mod()
             {
                 Id = i,
                 Name = modName,

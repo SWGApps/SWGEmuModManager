@@ -9,7 +9,7 @@ namespace SWGEmuModManager.Models
 {
     public class ConfigFile
     {
-        static readonly string _configFile = Path.Combine(Environment.GetFolderPath(
+        private static readonly string _configFile = Path.Combine(Environment.GetFolderPath(
             Environment.SpecialFolder.LocalApplicationData), "SWGEmuModManager/config.json");
 
         [JsonPropertyName("swgDirectory")]
@@ -20,7 +20,10 @@ namespace SWGEmuModManager.Models
 
         public static async Task GenerateNewConfig(bool deleteCurrent = false)
         {
-            if (deleteCurrent) File.Delete(path: _configFile);
+            if (deleteCurrent)
+            {
+                if (File.Exists(path: _configFile)) File.Delete(path: _configFile);
+            }
 
             if (!Directory.Exists(Path.GetDirectoryName(path: _configFile)))
             {
@@ -37,7 +40,7 @@ namespace SWGEmuModManager.Models
 
             await using StreamWriter sw = new(path: _configFile);
 
-            await sw.WriteAsync(JsonSerializer.Serialize(config, 
+            await sw.WriteAsync(JsonSerializer.Serialize(config,
                 new JsonSerializerOptions() { WriteIndented = true }));
         }
 
@@ -51,7 +54,7 @@ namespace SWGEmuModManager.Models
             using StreamWriter sw = new(path: _configFile);
 
             sw.Write(JsonSerializer.Serialize(config, 
-                new JsonSerializerOptions() { WriteIndented = true }));
+            new JsonSerializerOptions() { WriteIndented = true }));
         }
 
         public static ConfigFile? GetConfig()

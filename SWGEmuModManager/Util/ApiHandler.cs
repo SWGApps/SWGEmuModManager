@@ -11,26 +11,59 @@ namespace SWGEmuModManager.Util
     {
         private static readonly string _apiUrl = "https://localhost:7193";
 
-        public static async Task<List<Mod>> GetModsAsync()
+        public static async Task<List<MainWindowViewModelResponses.Mod>> GetModsAsync()
         {
             var client = new HttpClient();
 
             using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mods"));
 
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<List<MainWindowViewModelResponses.Mod>>() 
+                       ?? new List<MainWindowViewModelResponses.Mod>();
+            }
 
-            return await response.Content.ReadFromJsonAsync<List<Mod>>() ?? new List<Mod>();
+            return new List<MainWindowViewModelResponses.Mod>();
         }
 
-        public static async Task<InstallRequestResponse> InstallModAsync(int id)
+        public static async Task<MainWindowViewModelResponses.InstallRequestResponse> InstallModAsync(int id)
+        {
+            using HttpResponseMessage response = await GetResponseAsync(new Uri($"{_apiUrl}/Mod/Install/{id}"));
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<MainWindowViewModelResponses.InstallRequestResponse>() 
+                       ?? new MainWindowViewModelResponses.InstallRequestResponse();
+            }
+
+            return new MainWindowViewModelResponses.InstallRequestResponse();
+        }
+
+        public static async Task<MainWindowViewModelResponses.UninstallRequestResponse> UninstallModAsync(int id)
+        {
+            using HttpResponseMessage response = await GetResponseAsync(new Uri($"{_apiUrl}/Mod/Uninstall/{id}"));
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<MainWindowViewModelResponses.UninstallRequestResponse>() 
+                       ?? new MainWindowViewModelResponses.UninstallRequestResponse();
+            }
+
+            return new MainWindowViewModelResponses.UninstallRequestResponse();
+        }
+
+        private static async Task<HttpResponseMessage> GetResponseAsync(Uri uri)
         {
             var client = new HttpClient();
 
-            using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mod/Install/{id}"));
-
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<InstallRequestResponse>() ?? new InstallRequestResponse();
+            try
+            {
+                return await client.GetAsync(uri);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.StackTrace);
+            }
         }
     }
 }

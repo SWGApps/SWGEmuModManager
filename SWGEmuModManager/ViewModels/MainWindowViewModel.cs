@@ -34,6 +34,7 @@ namespace SWGEmuModManager.ViewModels
         {
             ProgressBarVisibility = Visibility.Collapsed;
             ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
+            InstallButtonText = "Install";
         }
 
         private async Task GenerateModManifestAsync()
@@ -54,24 +55,73 @@ namespace SWGEmuModManager.ViewModels
 
         private async Task GetModDataAsync(int id)
         {
-            InstallRequestResponse response = await ApiHandler.InstallModAsync(id);
+            ConfigFile config = ConfigFile.GetConfig()!;
 
-            List<int> conflicts = MainWindowModel.CheckConflictList(response.ConflictList);
+            // Uninstall mod
+            if (MainWindowModel.ModIsInstalled(id))
+            {
+                UninstallRequestResponse uninstallResponse = await ApiHandler.UninstallModAsync(id);
+
+                /*List<int> allowedConflicts = MainWindowModel.CheckConflictList(uninstallResponse.ConflictList);
+
+                allowedConflicts.ForEach(conflict =>
+                {
+                    Trace.WriteLine(conflict);
+                });*/
+
+                if (!string.IsNullOrEmpty(config.SwgDirectory))
+                {
+                    if (uninstallResponse.Result == "Success")
+                    {
+                        if (uninstallResponse.FileList!.Count > 0)
+                        {
+                            ProgressBarVisibility = Visibility.Visible;
+                            ProgressBarStatusLabel = $"Uninstalling {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
+                            await MainWindowModel.UninstallMod(id, uninstallResponse.FileList);
+                        }
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show(text: $"Uninstall request response: {uninstallResponse.Result} - Reason: {uninstallResponse.Reason}",
+                            caption: "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        App.log.Error(message: $"Uninstall request response: {uninstallResponse.Result} - Reason: {uninstallResponse.Reason}");
+                    }
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show(text: "No SWG directory set! Please set your SWG location in Config -> Set SWG Directory and try again.",
+                        caption: "No SWG Directory Set", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+
+                return;
+            }
+
+            // Install Mod
+            InstallRequestResponse installResponse = await ApiHandler.InstallModAsync(id);
+
+            List<int> conflicts = MainWindowModel.CheckConflictList(installResponse.ConflictList);
 
             conflicts.ForEach(conflict =>
             {
                 Trace.WriteLine(conflict);
             });
 
-            ConfigFile config = ConfigFile.GetConfig()!;
-
             if (!string.IsNullOrEmpty(config.SwgDirectory) && 
-                !string.IsNullOrEmpty(response.DownloadUrl) && 
-                !string.IsNullOrEmpty(response.Archive))
+                !string.IsNullOrEmpty(installResponse.DownloadUrl) && 
+                !string.IsNullOrEmpty(installResponse.Archive))
             {
-                ProgressBarVisibility = Visibility.Visible;
-                ProgressBarStatusLabel = $"Downloading {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
-                await MainWindowModel.DownloadModAsync(id, response.DownloadUrl, response.Archive);
+                if (installResponse.Result == "Success")
+                {
+                    ProgressBarVisibility = Visibility.Visible;
+                    ProgressBarStatusLabel = $"Downloading {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
+                    await MainWindowModel.DownloadModAsync(id, installResponse.DownloadUrl, installResponse.Archive);
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show(text: $"Install request response: {installResponse.Result} - Reason: {installResponse.Reason}",
+                        caption: "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    App.log.Error(message: $"Install request response: {installResponse.Result} - Reason: {installResponse.Reason}");
+                }
             }
             else
             {
