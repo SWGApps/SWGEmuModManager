@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using Microsoft.Toolkit.Mvvm.Input;
 using SWGEmuModManager.Models;
@@ -16,16 +18,21 @@ namespace SWGEmuModManager.ViewModels
 
         public MainWindowViewModel()
         {
-            Task.Run(() => Initialize());
+            Task.Run(Initialize);
+
             GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifestAsync);
             SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
             DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
 
             MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
+            MainWindowModel.OnInstallStarted += InstallStarted;
+            ZipArchiveExtension.OnInstallProgressUpdated += InstallProgressUpdated;
+            ZipArchiveExtension.OnInstallDone += InstallDone;
         }
 
         private async Task Initialize()
         {
+            ProgressBarVisibility = Visibility.Collapsed;
             ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetMods());
         }
 
@@ -49,7 +56,7 @@ namespace SWGEmuModManager.ViewModels
         {
             InstallRequestResponse response = await ApiHandler.InstallMod(id);
 
-            List<int> conflicts = await MainWindowModel.CheckConflictList(response.ConflictList);
+            List<int> conflicts = MainWindowModel.CheckConflictList(response.ConflictList);
 
             conflicts.ForEach(conflict =>
             {
@@ -62,11 +69,13 @@ namespace SWGEmuModManager.ViewModels
                 !string.IsNullOrEmpty(response.DownloadUrl) && 
                 !string.IsNullOrEmpty(response.Archive))
             {
+                ProgressBarVisibility = Visibility.Visible;
+                ProgressBarStatusLabel = $"Downloading {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
                 await MainWindowModel.DownloadMod(id, response.DownloadUrl, response.Archive);
             }
             else
             {
-                MessageBox.Show(text: "No SWG directory set! Please set your SWG location in Config -> Set SWG Directory and try again.",
+                System.Windows.Forms.MessageBox.Show(text: "No SWG directory set! Please set your SWG location in Config -> Set SWG Directory and try again.",
                     caption: "No SWG Directory Set", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
@@ -74,6 +83,22 @@ namespace SWGEmuModManager.ViewModels
         private void DownloadProgressUpdated(long bytesReceived, long totalBytesToReceive, int progressPercentage)
         {
             ProgressBarPercentage = progressPercentage;
+        }
+
+        private void InstallStarted()
+        {
+            ProgressBarStatusLabel = ProgressBarStatusLabel!.Replace(oldValue: "Downloading", newValue: "Installing");
+        }
+
+        private void InstallProgressUpdated(int currentFile, int totalFiles)
+        {
+            ProgressBarPercentage = (currentFile / totalFiles) * 1000;
+        }
+
+        private void InstallDone()
+        {
+            System.Threading.Thread.Sleep(1000);
+            ProgressBarVisibility = Visibility.Collapsed;
         }
     }
 }

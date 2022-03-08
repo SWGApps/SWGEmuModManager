@@ -6,6 +6,9 @@ namespace SWGEmuModManager.Util;
 
 public static class ZipArchiveExtension
 {
+    public static Action<int, int>? OnInstallProgressUpdated { get; set; }
+    public static Action? OnInstallDone { get; set; }
+
     public static void ExtractToDirectory(this ZipArchive archive, string destinationDirectoryName, bool overwrite)
     {
         if (!overwrite)
@@ -17,6 +20,7 @@ public static class ZipArchiveExtension
         DirectoryInfo di = Directory.CreateDirectory(destinationDirectoryName);
         string destinationDirectoryFullPath = di.FullName;
 
+        int i = 1;
         foreach (ZipArchiveEntry file in archive.Entries)
         {
             string completeFileName = Path.GetFullPath(Path.Combine(destinationDirectoryFullPath, file.FullName));
@@ -32,8 +36,14 @@ public static class ZipArchiveExtension
                 continue;
             }
 
+            OnInstallProgressUpdated?.Invoke(i, archive.Entries.Count);
+
             file.ExtractToFile(completeFileName, true);
+
+            i++;
         }
+
+        OnInstallDone?.Invoke();
     }
 }
 

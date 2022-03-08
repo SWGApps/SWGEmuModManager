@@ -86,13 +86,11 @@ internal class ManifestGenerator
     {
         bool hasConflict = false;
 
-        IEnumerable<string> list1 = Directory.EnumerateFiles(
-            path: directory, searchPattern: "*.*", SearchOption.AllDirectories)
+        IEnumerable<string> list1 = Directory.EnumerateFiles(path: directory, searchPattern: "*.*", SearchOption.AllDirectories)
             .Select(x => Path.GetRelativePath(relativeTo: directory, path: x))
             .Where(x => x != "modinfo.txt");
 
-        IEnumerable<string> list2 = Directory.EnumerateFiles(
-            path: directory2, searchPattern: "*.*", SearchOption.AllDirectories)
+        IEnumerable<string> list2 = Directory.EnumerateFiles(path: directory2, searchPattern: "*.*", SearchOption.AllDirectories)
             .Select(x => Path.GetRelativePath(relativeTo: directory2, path: x))
             .Where(x => x != "modinfo.txt");
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Windows;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace SWGEmuModManager.ViewModels
@@ -111,6 +112,8 @@ namespace SWGEmuModManager.ViewModels
     {
         private List<ModsDisplay>? _modList;
         private int? _progressBarPercentage;
+        private Visibility? _progessBarVisibility;
+        private string? _progressBarStatusLabel;
 
         public List<ModsDisplay>? ModList
         {
@@ -122,6 +125,18 @@ namespace SWGEmuModManager.ViewModels
         {
             get => _progressBarPercentage;
             set => SetProperty(ref _progressBarPercentage, value);
+        }
+
+        public Visibility? ProgressBarVisibility
+        {
+            get => _progessBarVisibility;
+            set => SetProperty(ref _progessBarVisibility, value);
+        }
+
+        public string? ProgressBarStatusLabel
+        {
+            get => _progressBarStatusLabel;
+            set => SetProperty(ref _progressBarStatusLabel, value);
         }
     }
 }

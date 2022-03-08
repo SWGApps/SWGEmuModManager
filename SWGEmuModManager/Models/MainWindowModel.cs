@@ -15,6 +15,7 @@ namespace SWGEmuModManager.Models
     internal static class MainWindowModel
     {
         public static Action<long, long, int>? OnDownloadProgressUpdated { get; set; }
+        public static Action? OnInstallStarted { get; set; }
 
         public static List<ModsDisplay> SetModDisplay(List<Mod> mods)
         {
@@ -93,7 +94,7 @@ namespace SWGEmuModManager.Models
             }
         }
 
-        public static async Task<List<int>> CheckConflictList(List<int>? conflictList)
+        public static List<int> CheckConflictList(List<int>? conflictList)
         {
             ConfigFile config = ConfigFile.GetConfig()!;
 
@@ -167,6 +168,8 @@ namespace SWGEmuModManager.Models
 
                 if (config is not null && !string.IsNullOrEmpty(config.SwgDirectory))
                 {
+                    OnInstallStarted?.Invoke();
+
                     using FileStream stream = File.OpenRead(Path.Join(config.SwgDirectory, archiveName));
                     
                     ZipArchiveExtension.ExtractToDirectory(archive: new ZipArchive(stream), config.SwgDirectory, overwrite: true);
