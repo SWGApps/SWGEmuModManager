@@ -145,6 +145,7 @@ internal class ManifestGenerator
                 Author = GetModInfo(modInfo, 2),
                 Version = GetModInfo(modInfo, 3),
                 Size = GetModSize(directory),
+                Source = GetModInfo(modInfo, 4),
                 Downloads = 0,
                 Released = DateTime.Now,
                 Archive = await ZipArchiveExtension.CreateZipFileAsync(directory, modName),

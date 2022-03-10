@@ -123,6 +123,12 @@
 
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Path=Description}" TextWrapping="Wrap"/>
+                                                <TextBlock>
+                                                    <Hyperlink NavigateUri="{Binding Source}" RequestNavigate="Hyperlink_RequestNavigate">
+                                                        Source
+                                                    </Hyperlink>
+                                                </TextBlock>
+
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>

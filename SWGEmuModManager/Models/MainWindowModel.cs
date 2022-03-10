@@ -31,6 +31,7 @@ namespace SWGEmuModManager.Models
                     Description = mod.Description,
                     Author = $"{mod.Author}",
                     Version = $"{mod.Version}",
+                    Source = $"{mod.Source}",
                     Size = $"{UnitConversion.ToSize((long)mod.Size!, unit: UnitConversion.SizeUnits.MB)}",
                     Downloads = $"{mod.Downloads}",
                     Released = $"{mod.Released.ToString(format: "d", DateTimeFormatInfo.InvariantInfo)}"

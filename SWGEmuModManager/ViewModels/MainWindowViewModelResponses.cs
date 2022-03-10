@@ -27,6 +27,9 @@ internal class MainWindowViewModelResponses : ObservableObject
         [JsonPropertyName("version")]
         public string? Version { get; set; }
 
+        [JsonPropertyName("source")]
+        public string? Source { get; set; }
+
         [JsonPropertyName("size")]
         public ulong? Size { get; set; }
 
@@ -65,6 +68,9 @@ internal class MainWindowViewModelResponses : ObservableObject
 
         [JsonPropertyName("version")]
         public string? Version { get; set; }
+
+        [JsonPropertyName("source")]
+        public string? Source { get; set; }
 
         [JsonPropertyName("size")]
         public string? Size { get; set; }
