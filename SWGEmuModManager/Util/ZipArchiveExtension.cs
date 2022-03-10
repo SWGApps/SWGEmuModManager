@@ -83,6 +83,11 @@ public static class ZipArchiveExtension
 
             OnInstallProgressUpdated?.Invoke(i, archive.Entries.Count);
 
+            if (!Directory.Exists(Path.GetDirectoryName(completeFileName)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(completeFileName)!);
+            }
+
             file.ExtractToFile(completeFileName, overwrite: true);
 
             i++;
