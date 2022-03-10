@@ -14,31 +14,31 @@ namespace SWGEmuModManager.ViewModels
         public List<ModsDisplay>? ModList
         {
             get => _modList;
-            set => SetProperty(ref _modList, value);
+            set => SetProperty(field: ref _modList, value);
         }
 
         public int? ProgressBarPercentage
         {
             get => _progressBarPercentage;
-            set => SetProperty(ref _progressBarPercentage, value);
+            set => SetProperty(field: ref _progressBarPercentage, value);
         }
 
         public Visibility? ProgressBarVisibility
         {
             get => _progessBarVisibility;
-            set => SetProperty(ref _progessBarVisibility, value);
+            set => SetProperty(field: ref _progessBarVisibility, value);
         }
 
         public string? ProgressBarStatusLabel
         {
             get => _progressBarStatusLabel;
-            set => SetProperty(ref _progressBarStatusLabel, value);
+            set => SetProperty(field: ref _progressBarStatusLabel, value);
         }
 
         public string? InstallButtonText
         {
             get => _installButtonText;
-            set => SetProperty(ref _installButtonText, value);
+            set => SetProperty(field: ref _installButtonText, value);
         }
     }
 }

@@ -28,12 +28,13 @@ namespace SWGEmuModManager.ViewModels
             ZipArchiveExtension.OnInstallStarted += InstallStarted;
             ZipArchiveExtension.OnInstallProgressUpdated += InstallProgressUpdated;
             ZipArchiveExtension.OnInstallDone += InstallDone;
+            MainWindowModel.OnUninstallDone += UninstallDone;
         }
 
         private async Task InitializeAsync()
         {
             ProgressBarVisibility = Visibility.Collapsed;
-            ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
+            await RefreshModDisplay();
             InstallButtonText = "Install";
         }
 
@@ -60,6 +61,8 @@ namespace SWGEmuModManager.ViewModels
             // Uninstall mod
             if (MainWindowModel.ModIsInstalled(id))
             {
+                ProgressBarVisibility = Visibility.Visible;
+
                 UninstallRequestResponse uninstallResponse = await ApiHandler.UninstallModAsync(id);
 
                 /*List<int> allowedConflicts = MainWindowModel.CheckConflictList(uninstallResponse.ConflictList);
@@ -75,7 +78,6 @@ namespace SWGEmuModManager.ViewModels
                     {
                         if (uninstallResponse.FileList!.Count > 0)
                         {
-                            ProgressBarVisibility = Visibility.Visible;
                             ProgressBarStatusLabel = $"Uninstalling {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
                             await MainWindowModel.UninstallMod(id, uninstallResponse.FileList);
                         }
@@ -96,6 +98,8 @@ namespace SWGEmuModManager.ViewModels
                 return;
             }
 
+            ProgressBarVisibility = Visibility.Visible;
+
             // Install Mod
             InstallRequestResponse installResponse = await ApiHandler.InstallModAsync(id);
 
@@ -112,7 +116,6 @@ namespace SWGEmuModManager.ViewModels
             {
                 if (installResponse.Result == "Success")
                 {
-                    ProgressBarVisibility = Visibility.Visible;
                     ProgressBarStatusLabel = $"Downloading {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
                     await MainWindowModel.DownloadModAsync(id, installResponse.DownloadUrl, installResponse.Archive);
                 }
@@ -145,10 +148,25 @@ namespace SWGEmuModManager.ViewModels
             ProgressBarPercentage = (currentFile / totalFiles) * 1000;
         }
 
-        private void InstallDone()
+        private async void InstallDone()
         {
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(millisecondsTimeout: 1000);
             ProgressBarVisibility = Visibility.Collapsed;
+
+            await RefreshModDisplay();
+        }
+
+        private async void UninstallDone()
+        {
+            System.Threading.Thread.Sleep(millisecondsTimeout: 1000);
+            ProgressBarVisibility = Visibility.Collapsed;
+
+            await RefreshModDisplay();
+        }
+
+        private async Task RefreshModDisplay()
+        {
+            ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
         }
     }
 }

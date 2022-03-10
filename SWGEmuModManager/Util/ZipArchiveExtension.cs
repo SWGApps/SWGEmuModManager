@@ -14,7 +14,7 @@ public static class ZipArchiveExtension
 
     public static async Task<string> CreateZipFileAsync(string directory, string modName)
     {
-        string archiveName = $"{Path.GetDirectoryName(directory)!}/{modName.Replace(" ", "")}.zip";
+        string archiveName = $"{Path.GetDirectoryName(directory)!}/{modName.Replace(oldValue: " ", newValue: "")}.zip";
 
         File.Move(sourceFileName: Path.Join(directory, "modinfo.txt"),
             destFileName: Path.Join(Directory.GetParent(directory)!.FullName, "modinfo.txt"));
@@ -72,7 +72,7 @@ public static class ZipArchiveExtension
 
             if (!completeFileName.StartsWith(destinationDirectoryFullPath, StringComparison.OrdinalIgnoreCase))
             {
-                throw new IOException("Trying to extract file outside of destination directory.");
+                throw new IOException(message: "Trying to extract file outside of destination directory.");
             }
 
             if (file.Name == "")
@@ -83,7 +83,7 @@ public static class ZipArchiveExtension
 
             OnInstallProgressUpdated?.Invoke(i, archive.Entries.Count);
 
-            file.ExtractToFile(completeFileName, true);
+            file.ExtractToFile(completeFileName, overwrite: true);
 
             i++;
         }
