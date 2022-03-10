@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SWGEmuModManager.ViewModels;
 
@@ -52,8 +53,15 @@ internal class ManifestGenerator
         return fileList;
     }
 
-    private static string GetModInfo(string[] modInfo, int index) => modInfo[index].Split("=")[1];
+    private static string GetModInfo(string[] modInfo, int index)
+    {
+        int idx = modInfo[index].IndexOf('=');
 
+        if (idx == -1)
+            return "";
+
+        return modInfo[index][(idx+1)..];
+    }
 
 
     private static async Task<bool> HasFileConflictAsync(string directory, string directory2)
