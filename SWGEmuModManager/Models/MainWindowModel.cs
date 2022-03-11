@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,24 +18,27 @@ namespace SWGEmuModManager.Models
         public static Action<int, int>? OnUninstallProgressUpdated { get; set; }
         public static Action? OnUninstallDone { get; set; }
 
-        public static List<MainWindowViewModelResponses.ModsDisplay> SetModDisplay(List<MainWindowViewModelResponses.Mod> mods)
+        public static async Task<List<MainWindowViewModelResponses.ModsDisplay>> SetModDisplay(List<MainWindowViewModelResponses.Mod> mods)
         {
             List<MainWindowViewModelResponses.ModsDisplay> modsDisplay = new();
 
-            mods.ForEach(mod =>
+            await Task.Run(() =>
             {
-                modsDisplay.Add(item: new MainWindowViewModelResponses.ModsDisplay()
+                mods.ForEach(mod =>
                 {
-                    Id = mod.Id,
-                    Name = mod.Name,
-                    BannerUrl = mod.BannerUrl,
-                    Description = mod.Description,
-                    Author = $"{mod.Author}",
-                    Version = $"{mod.Version}",
-                    Source = $"{mod.Source}",
-                    Size = $"{UnitConversion.ToSize((long)mod.Size!, unit: UnitConversion.SizeUnits.MB)}",
-                    Downloads = $"{mod.Downloads}",
-                    Released = $"{mod.Released.ToString(format: "d", DateTimeFormatInfo.InvariantInfo)}"
+                    modsDisplay.Add(item: new MainWindowViewModelResponses.ModsDisplay()
+                    {
+                        Id = mod.Id,
+                        Name = mod.Name,
+                        BannerUrl = mod.BannerUrl,
+                        Description = mod.Description,
+                        Author = $"{mod.Author}",
+                        Version = $"{mod.Version}",
+                        Source = $"{mod.Source}",
+                        Size = $"{UnitConversion.ToSize((long)mod.Size!, unit: UnitConversion.SizeUnits.MB)}",
+                        Downloads = $"{mod.Downloads}",
+                        Released = $"{mod.Released.ToString(format: "d", DateTimeFormatInfo.InvariantInfo)}"
+                    });
                 });
             });
 
