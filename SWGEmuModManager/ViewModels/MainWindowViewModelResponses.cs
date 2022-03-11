@@ -5,7 +5,7 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace SWGEmuModManager.ViewModels; 
 
-internal class MainWindowViewModelResponses : ObservableObject
+public class MainWindowViewModelResponses : ObservableObject
 {
     public class Mod
     {

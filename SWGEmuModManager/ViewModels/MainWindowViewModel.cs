@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.Toolkit.Mvvm.Input;
 using SWGEmuModManager.Models;
 using SWGEmuModManager.Util;
+using SWGEmuModManager.Views;
 
 namespace SWGEmuModManager.ViewModels
 {
@@ -15,6 +16,7 @@ namespace SWGEmuModManager.ViewModels
         public IAsyncRelayCommand GenerateModManifestMenuItem { get; }
         public IRelayCommand SetSwgDirectoryMenuItem { get; set; }
         public IAsyncRelayCommand DownloadModButton { get; }
+        public IRelayCommand ExamineButton { get; }
 
         public MainWindowViewModel()
         {
@@ -23,6 +25,7 @@ namespace SWGEmuModManager.ViewModels
             GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifestAsync);
             SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
             DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
+            ExamineButton = new RelayCommand<int>(ExamineMod);
 
             MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
             ZipArchiveExtension.OnInstallStarted += InstallStarted;
@@ -133,6 +136,14 @@ namespace SWGEmuModManager.ViewModels
             }
         }
 
+        private void ExamineMod(int id)
+        {
+            if (ModList is not null)
+            {
+                new ExamineWindow(modDisplay: ModList.First(x => x.Id == id)).Show();
+            }
+        }
+
         private void DownloadProgressUpdated(long bytesReceived, long totalBytesToReceive, int progressPercentage)
         {
             ProgressBarPercentage = progressPercentage;
@@ -166,7 +177,7 @@ namespace SWGEmuModManager.ViewModels
 
         private async Task RefreshModDisplay()
         {
-            ModList = MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
+            ModList = await MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
         }
     }
 }
