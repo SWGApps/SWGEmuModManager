@@ -6,18 +6,15 @@ namespace SWGEmuModManager.Themes
     {
         private void CloseWindow_Event(object sender, RoutedEventArgs e)
         {
-            if (e.Source != null)
-                try { CloseWind(Window.GetWindow((FrameworkElement)e.Source)); } catch { }
+            if (e.Source != null) CloseWind(Window.GetWindow((FrameworkElement)e.Source)!);
         }
         private void AutoMinimize_Event(object sender, RoutedEventArgs e)
         {
-            if (e.Source != null)
-                try { MaximizeRestore(Window.GetWindow((FrameworkElement)e.Source)); } catch { }
+            if (e.Source != null) MaximizeRestore(Window.GetWindow((FrameworkElement)e.Source)!);
         }
         private void Minimize_Event(object sender, RoutedEventArgs e)
         {
-            if (e.Source != null)
-                try { MinimizeWind(Window.GetWindow((FrameworkElement)e.Source)); } catch { }
+            if (e.Source != null) MinimizeWind(Window.GetWindow((FrameworkElement)e.Source)!);
         }
 
         public static void CloseWind(Window window) => window.Close();

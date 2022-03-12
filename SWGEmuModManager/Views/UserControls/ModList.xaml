@@ -4,130 +4,177 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:fa="http://schemas.fontawesome.io/icons/"
-             xmlns:local="clr-namespace:SWGEmuModManager.Views.UserControls"
+             xmlns:vm="clr-namespace:SWGEmuModManager.ViewModels"
+             xmlns:util="clr-namespace:SWGEmuModManager.Util"
+             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     
     <!-- #region WindowResources -->
     <UserControl.Resources>
+        <util:MathConverter x:Key="MathConverter" />
+        <util:InstallButtonConverter x:Key="InstallButtonConverter" />
+        <util:MissingImageConverter x:Key="MissingImageConverter" />
 
-        <Style x:Key="ModBannerImage" TargetType="{x:Type Image}">
+        <Style x:Key="ModBannerImage" TargetType="{x:Type TypeName=Image}">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Stretch" Value="UniformToFill"/>
         </Style>
 
-        <Style x:Key="ModTitle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="ModTitle" TargetType="{x:Type TypeName=TextBlock}">
             <Setter Property="FontFamily" Value="Bahnschrift Condensed"/>
             <Setter Property="FontSize" Value="20"/>
         </Style>
 
-        <Style x:Key="ModDetailsPrefix" TargetType="{x:Type TextBlock}">
+        <Style x:Key="ModDetailsPrefix" TargetType="{x:Type TypeName=TextBlock}">
             <Setter Property="Foreground" Value="#66FFFFFF"/>
             <Setter Property="FontFamily" Value="Bahnschrift"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="0 0 0 0"/>
         </Style>
 
-        <Style x:Key="ModDetailsIcon" TargetType="{x:Type fa:FontAwesome}">
+        <Style x:Key="ModDetailsIcon" TargetType="{x:Type TypeName=fa:FontAwesome}">
             <Setter Property="Foreground" Value="#66FFFFFF"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="0 0 5 0"/>
         </Style>
 
-        <Style x:Key="ModDetailsValue" TargetType="{x:Type TextBlock}">
+        <Style x:Key="ModDetailsValue" TargetType="{x:Type TypeName=TextBlock}">
             <Setter Property="Foreground" Value="#99FFFFFF"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontFamily" Value="Bahnschrift"/>
             <Setter Property="FontSize" Value="12"/>
         </Style>
 
-        <Style x:Key="ModDetailsStack" TargetType="{x:Type StackPanel}">
+        <Style x:Key="ModDetailsStack" TargetType="{x:Type TypeName=StackPanel}">
             <Setter Property="Orientation" Value="Horizontal"/>
             <Setter Property="Margin" Value="14 0 0 0"/>
         </Style>
 
     </UserControl.Resources>
-    <ScrollViewer>
-        <ItemsControl ItemsSource="{Binding Path=ModList}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <DataTemplate.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontSize" Value="12"/>
-                            <Setter Property="FontFamily" Value="Bahnschrift"/>
-                        </Style>
-                    </DataTemplate.Resources>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="145" />
-                        </Grid.RowDefinitions>
 
-                        <Border Margin="0 5" Grid.Column="0" BorderThickness="1" BorderBrush="DarkCyan">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="125" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                                <Image x:Name="ModBanner" Grid.Column="0" Source="{Binding BannerUrl}" Style="{DynamicResource ModBannerImage}" />
+        <ScrollViewer Grid.Row="0" Grid.Column="0">
+            <ItemsControl ItemsSource="{Binding Path=ModList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DataTemplate.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="FontFamily" Value="Bahnschrift"/>
+                            </Style>
+                        </DataTemplate.Resources>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="145" />
+                            </Grid.RowDefinitions>
 
-                                <StackPanel Grid.Column="1" Margin="14 10">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Style="{DynamicResource ModTitle}" Text="{Binding Name}"/>
-                                        <StackPanel Style="{DynamicResource ModDetailsStack}" VerticalAlignment="Bottom" Margin="4 0 0 2">
-                                            <TextBlock Style="{DynamicResource ModDetailsPrefix}">v</TextBlock>
-                                            <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Version}"/>
-                                        </StackPanel>
-                                    </StackPanel>
+                            <Border Margin="0 5" Grid.Column="0" BorderThickness="1" BorderBrush="DarkCyan">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="125" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
 
-                                    <StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0 2">
-                                            <StackPanel Style="{DynamicResource ModDetailsStack}" Margin="0">
-                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="User"/>
-                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Author}"/>
-                                            </StackPanel>
+                                    <Image x:Name="ModBanner" Grid.Column="0" Source="{Binding Path=BannerUrl, 
+                                        Converter={StaticResource MissingImageConverter}}" Style="{DynamicResource ResourceKey=ModBannerImage}" />
 
-                                            <StackPanel Style="{DynamicResource ModDetailsStack}">
-                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="Database" />
-                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Size, StringFormat={}{0}MB}"/>
-                                            </StackPanel>
-
-                                            <StackPanel Style="{DynamicResource ModDetailsStack}">
-                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="Download" />
-                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Downloads}"/>
-                                            </StackPanel>
-
-                                            <StackPanel Style="{DynamicResource ModDetailsStack}">
-                                                <fa:FontAwesome Style="{DynamicResource ModDetailsIcon}" Icon="Calendar" />
-                                                <TextBlock Style="{DynamicResource ModDetailsValue}" Text="{Binding Released}"/>
+                                    <StackPanel Grid.Column="1" Margin="14 10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{DynamicResource ResourceKey=ModTitle}" Text="{Binding Path=Name}"/>
+                                            <StackPanel Style="{DynamicResource ResourceKey=ModDetailsStack}" VerticalAlignment="Bottom" Margin="4 0 0 2">
+                                                <TextBlock Style="{DynamicResource ResourceKey=ModDetailsPrefix}">v</TextBlock>
+                                                <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Version}"/>
                                             </StackPanel>
                                         </StackPanel>
 
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                                <StackPanel Style="{DynamicResource ResourceKey=ModDetailsStack}" Margin="0">
+                                                    <fa:FontAwesome Style="{DynamicResource ResourceKey=ModDetailsIcon}" Icon="User"/>
+                                                    <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Author}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Style="{DynamicResource ResourceKey=ModDetailsStack}">
+                                                    <fa:FontAwesome Style="{DynamicResource ResourceKey=ModDetailsIcon}" Icon="Database" />
+                                                    <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Size, StringFormat={}{0}MB}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Style="{DynamicResource ResourceKey=ModDetailsStack}">
+                                                    <fa:FontAwesome Style="{DynamicResource ResourceKey=ModDetailsIcon}" Icon="Download" />
+                                                    <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Downloads}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Style="{DynamicResource ResourceKey=ModDetailsStack}">
+                                                    <fa:FontAwesome Style="{DynamicResource ResourceKey=ModDetailsIcon}" Icon="Calendar" />
+                                                    <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Released}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Path=Description}" TextWrapping="Wrap"/>
+                                                <TextBlock>
+                                                    <Hyperlink NavigateUri="{Binding Source}" RequestNavigate="Hyperlink_RequestNavigate">
+                                                        Source
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
 
-                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                    <!-- Get data context of ScrollViewer and then bind button -->
-                                    <!-- Command Parameter is in the data template's data context -->
-                                    <Button Width="Auto" Height="25" Command="{Binding Path=DataContext.DownloadModButton, 
-                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Id}">Install</Button>
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                        <!-- Get data context of ScrollViewer and then bind button -->
+                                        <!-- Command Parameter is in the data template's data context -->
+                                        <Button Width="Auto" Height="25" Command="{Binding Path=DataContext.DownloadModButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Path=Id}">
+                                            <Button.Content>
+                                                <MultiBinding Converter="{StaticResource InstallButtonConverter}">
+                                                    <Binding Path="DataContext.InstallButtonText" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}" />
+                                                    <Binding Path="Id"></Binding>
+                                                </MultiBinding>
+                                            </Button.Content>
+                                        </Button>
 
-                                    <Button Width="Auto" Height="25">Details</Button>
-                                    <ProgressBar Width="125" Height="5" Value="{Binding Path=DataContext.ProgressBarPercentage, 
-                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"></ProgressBar>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </ScrollViewer>
+                                        <Button Command="{Binding Path=DataContext.ExamineButton, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Id}" Width="Auto" Height="25">
+                                            Examine
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Grid Grid.Row="1" Margin="0 5 0 0" Visibility="{Binding Path=ProgressBarVisibility}">
+            <StackPanel>
+                <Label Content="{Binding ProgressBarStatusLabel, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Grid>
+                    <ProgressBar Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" Height="20" 
+                        Value="{Binding Path=ProgressBarPercentage}" Visibility="Visible" />
+
+                    <!-- Progress bar pecentage based on a value of 1000, so use converter to divide by 10 -->
+                    <TextBlock Text="{Binding Path=ProgressBarPercentage, StringFormat={}{0:0}%, 
+                        Converter={StaticResource ResourceKey=MathConverter}, ConverterParameter=/10}" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+    
 </UserControl>

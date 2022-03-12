@@ -37,12 +37,10 @@ namespace GUISWGTools.Themes
                 case ThemeTypes.ColourfulLight: themeName = "ColourfulLightTheme"; break;
             }
 
-            try
-            {
-                if (!string.IsNullOrEmpty(themeName))
-                    ChangeTheme(new Uri($"Themes/{themeName}.xaml", UriKind.Relative));
-            }
-            catch { }
+
+            if (!string.IsNullOrEmpty(themeName))
+                ChangeTheme(new Uri($"Themes/{themeName}.xaml", UriKind.Relative));
+
         }
     }
 }

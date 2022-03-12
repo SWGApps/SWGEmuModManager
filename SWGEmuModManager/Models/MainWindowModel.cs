@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,31 +15,37 @@ namespace SWGEmuModManager.Models
     internal static class MainWindowModel
     {
         public static Action<long, long, int>? OnDownloadProgressUpdated { get; set; }
+        public static Action<int, int>? OnUninstallProgressUpdated { get; set; }
+        public static Action? OnUninstallDone { get; set; }
 
-        public static List<ModsDisplay> SetModDisplay(List<Mod> mods)
+        public static async Task<List<MainWindowViewModelResponses.ModsDisplay>> SetModDisplay(List<MainWindowViewModelResponses.Mod> mods)
         {
-            List<ModsDisplay> modsDisplay = new();
+            List<MainWindowViewModelResponses.ModsDisplay> modsDisplay = new();
 
-            mods.ForEach(mod =>
+            await Task.Run(() =>
             {
-                modsDisplay.Add(new ModsDisplay()
+                mods.ForEach(mod =>
                 {
-                    Id = mod.Id,
-                    Name = mod.Name,
-                    BannerUrl = mod.BannerUrl,
-                    Description = mod.Description,
-                    Author = $"{mod.Author}",
-                    Version = $"{mod.Version}",
-                    Size = $"{UnitConversion.ToSize((long)mod.Size!, UnitConversion.SizeUnits.MB)}",
-                    Downloads = $"{mod.Downloads}",
-                    Released = $"{mod.Released.ToString("d", DateTimeFormatInfo.InvariantInfo)}"
+                    modsDisplay.Add(item: new MainWindowViewModelResponses.ModsDisplay()
+                    {
+                        Id = mod.Id,
+                        Name = mod.Name,
+                        BannerUrl = mod.BannerUrl,
+                        Description = mod.Description,
+                        Author = $"{mod.Author}",
+                        Version = $"{mod.Version}",
+                        Source = $"{mod.Source}",
+                        Size = $"{UnitConversion.ToSize((long)mod.Size!, unit: UnitConversion.SizeUnits.MB)}",
+                        Downloads = $"{mod.Downloads}",
+                        Released = $"{mod.Released.ToString(format: "d", DateTimeFormatInfo.InvariantInfo)}"
+                    });
                 });
             });
 
             return modsDisplay;
         }
 
-        public static bool CheckBaseInstallation(string location)
+        private static bool CheckBaseInstallation(string location)
         {
             if (!Directory.Exists(location)) return false;
 
@@ -52,7 +58,7 @@ namespace SWGEmuModManager.Models
             };
 
             // Files in selected SWG directory
-            List<string> files = Directory.GetFiles(location, "*.*", SearchOption.AllDirectories).ToList();
+            List<string> files = Directory.GetFiles(path: location, searchPattern: "*.*", SearchOption.AllDirectories).ToList();
 
             int requiredFiles = 0;
 
@@ -60,7 +66,7 @@ namespace SWGEmuModManager.Models
             {
                 files.ForEach(file =>
                 {
-                    if (fileToCheck == file.Split(location + "\\")[1].Trim()) requiredFiles++;
+                    if (fileToCheck == file.Split(separator: location + "\\")[1].Trim()) requiredFiles++;
                 });
             });
 
@@ -81,7 +87,7 @@ namespace SWGEmuModManager.Models
                 {
                     ConfigFile config = ConfigFile.GetConfig()!;
 
-                    config!.SwgDirectory = dialog.SelectedPath.Replace("\\", "/");
+                    config!.SwgDirectory = dialog.SelectedPath.Replace(oldValue: "\\", newValue: "/");
 
                     ConfigFile.SetConfig(config);
                 }
@@ -93,7 +99,7 @@ namespace SWGEmuModManager.Models
             }
         }
 
-        public static async Task<List<int>> CheckConflictList(List<int>? conflictList)
+        public static List<int> CheckConflictList(IEnumerable<int>? conflictList)
         {
             ConfigFile config = ConfigFile.GetConfig()!;
 
@@ -105,7 +111,22 @@ namespace SWGEmuModManager.Models
             return new List<int>();
         }
 
-        public static async Task DownloadMod(int modId, string downloadUrl, string archiveName)
+        public static bool ModIsInstalled(int id)
+        {
+            ConfigFile? config = ConfigFile.GetConfig();
+
+            if (config is not null && config.InstalledMods!.Count > 0)
+            {
+                if (config.InstalledMods.Any(x => x == id))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static async Task DownloadModAsync(int modId, string downloadUrl, string archiveName)
         {
             using HttpClient client = new();
 
@@ -113,19 +134,25 @@ namespace SWGEmuModManager.Models
 
             if (config is not null && !string.IsNullOrEmpty(config.SwgDirectory))
             {
-                using HttpResponseMessage response = client.GetAsync(new Uri($"{downloadUrl}{archiveName}"), HttpCompletionOption.ResponseHeadersRead).Result;
-                long length = int.Parse(response.Content.Headers.First(h => h.Key.Equals("Content-Length")).Value.First());
+                using HttpResponseMessage response = client.GetAsync(new Uri($"{downloadUrl}{archiveName}"),
+                    HttpCompletionOption.ResponseHeadersRead).Result;
 
-                response.EnsureSuccessStatusCode();
+                long length = int.Parse(response.Content.Headers.First(h => 
+                    h.Key.Equals("Content-Length")).Value.First());
 
-                using Stream contentStream = await response.Content.ReadAsStreamAsync();
-                using Stream fileStream = new FileStream(Path.Join(config.SwgDirectory, archiveName), FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+                if (response.IsSuccessStatusCode)
+                {
+                    using Stream contentStream = await response.Content.ReadAsStreamAsync();
 
-                await DoStreamWriteAsync(contentStream, fileStream, length);
+                    using Stream fileStream = new FileStream(Path.Join(config.SwgDirectory, archiveName),
+                        FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 8192, useAsync: true);
 
-                await fileStream.DisposeAsync();
+                    await DoStreamWriteAsync(contentStream, fileStream, length);
 
-                await UnzipMod(modId, archiveName);
+                    await fileStream.DisposeAsync();
+
+                    await ZipArchiveExtension.UnzipModAsync(modId, archiveName);
+                }
             }
         }
 
@@ -145,7 +172,7 @@ namespace SWGEmuModManager.Models
                 }
                 else
                 {
-                    await fileStream.WriteAsync(buffer.AsMemory(0, read));
+                    await fileStream.WriteAsync(buffer.AsMemory(start: 0, length: read));
 
                     bytesReceived += read;
                     totalBytesToReceive += 1;
@@ -159,27 +186,34 @@ namespace SWGEmuModManager.Models
             }
         }
 
-        public static async Task UnzipMod(int modId, string archiveName)
+        public static async Task UninstallMod(int id, List<string> fileList)
         {
+            ConfigFile? config = ConfigFile.GetConfig();
+
             await Task.Run(() =>
             {
-                ConfigFile? config = ConfigFile.GetConfig();
-
-                if (config is not null && !string.IsNullOrEmpty(config.SwgDirectory))
+                if (config is not null)
                 {
-                    using FileStream stream = File.OpenRead(Path.Join(config.SwgDirectory, archiveName));
-                    
-                    ZipArchiveExtension.ExtractToDirectory(archive: new ZipArchive(stream), config.SwgDirectory, overwrite: true);
+                    if (!string.IsNullOrEmpty(config.SwgDirectory))
+                    {
+                        int i = 0;
+                        foreach (string file in fileList)
+                        {
+                            OnUninstallProgressUpdated?.Invoke(i, fileList.Count);
 
-                    stream.Dispose();
+                            string filePath = Path.Join(config.SwgDirectory, file);
 
-                    File.Delete(Path.Join(config.SwgDirectory, archiveName));
+                            if (File.Exists(filePath)) File.Delete(filePath);
+                        }
+                    }
                 }
-
-                config!.InstalledMods!.Add(modId);
-
-                ConfigFile.SetConfig(config);
             });
+
+            config!.InstalledMods!.RemoveAll(mid => mid == id);
+
+            ConfigFile.SetConfig(config);
+
+            OnUninstallDone?.Invoke();
         }
     }
 }
