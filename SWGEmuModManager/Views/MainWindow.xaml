@@ -15,7 +15,7 @@
         </Style>
 
         <Style x:Key="WindowTitle" TargetType="{x:Type TypeName=TextBlock}">
-            
+
         </Style>
     </Window.Resources>
 
@@ -121,17 +121,11 @@
         <Grid Grid.Row="1" Grid.Column="1" Background="#FF00404C">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20" />
-                <RowDefinition Height="20" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="20" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="20" />
-            </Grid.ColumnDefinitions>
 
-            <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <Menu Grid.Row="0" Grid.Column="0">
                 <MenuItem Header="_Config">
                     <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
                 </MenuItem>
@@ -140,7 +134,18 @@
                 </MenuItem>
             </Menu>
 
-            <uc:ModList Grid.Column="1" Grid.Row="2"></uc:ModList>
+            <Border Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
+                <Grid>
+                    <Border Background="#FF00404C" ClipToBounds="True" CornerRadius="4" Margin="4,4,26,4">
+                        <Border Background="Transparent" BorderBrush="#FF00232c" BorderThickness="35 40 35 40" Margin="-40" CornerRadius="4">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="0" BlurRadius="80"/>
+                            </Border.Effect>
+                        </Border>
+                    </Border>
+                    <uc:ModList></uc:ModList>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Window>
