@@ -81,6 +81,9 @@
                             </Grid.RowDefinitions>
 
                             <Border Margin="0 5" Grid.Column="0" BorderThickness="1" BorderBrush="DarkCyan">
+                                <Border.Background>
+                                    <ImageBrush/>
+                                </Border.Background>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="125" />
