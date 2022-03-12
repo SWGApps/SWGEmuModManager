@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -18,13 +17,16 @@ namespace SWGEmuModManager.Models
         public static Action<int, int>? OnUninstallProgressUpdated { get; set; }
         public static Action? OnUninstallDone { get; set; }
 
-        public static async Task<List<MainWindowViewModelResponses.ModsDisplay>> SetModDisplay(List<MainWindowViewModelResponses.Mod> mods)
+        public static async Task<List<MainWindowViewModelResponses.ModsDisplay>> SetModDisplay(MainWindowViewModelResponses.PaginatedResponse<List<MainWindowViewModelResponses.Mod>>? mods)
         {
             List<MainWindowViewModelResponses.ModsDisplay> modsDisplay = new();
 
             await Task.Run(() =>
             {
-                mods.ForEach(mod =>
+                if (mods is null) return;
+                if (mods.Data is null) return;
+                
+                mods.Data.ForEach(mod =>
                 {
                     modsDisplay.Add(item: new MainWindowViewModelResponses.ModsDisplay()
                     {

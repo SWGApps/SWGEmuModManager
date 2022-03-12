@@ -11,19 +11,19 @@ namespace SWGEmuModManager.Util
     {
         private static readonly string _apiUrl = "https://localhost:7193";
 
-        public static async Task<List<MainWindowViewModelResponses.Mod>> GetModsAsync()
+        public static async Task<MainWindowViewModelResponses.PaginatedResponse<List<MainWindowViewModelResponses.Mod>>> GetModsAsync(int startPage, int totalItems)
         {
             var client = new HttpClient();
 
-            using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mods"));
+            using HttpResponseMessage response = await client.GetAsync(new Uri($"{_apiUrl}/Mods/{startPage}/{totalItems}"));
 
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<List<MainWindowViewModelResponses.Mod>>() 
-                       ?? new List<MainWindowViewModelResponses.Mod>();
+                return await response.Content.ReadFromJsonAsync<MainWindowViewModelResponses.PaginatedResponse<List<MainWindowViewModelResponses.Mod>>>() 
+                       ?? new MainWindowViewModelResponses.PaginatedResponse<List<MainWindowViewModelResponses.Mod>>();
             }
 
-            return new List<MainWindowViewModelResponses.Mod>();
+            return new MainWindowViewModelResponses.PaginatedResponse<List<MainWindowViewModelResponses.Mod>>();
         }
 
         public static async Task<MainWindowViewModelResponses.InstallRequestResponse> InstallModAsync(int id)

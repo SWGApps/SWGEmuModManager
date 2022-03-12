@@ -177,7 +177,7 @@ namespace SWGEmuModManager.ViewModels
 
         private async Task RefreshModDisplay()
         {
-            ModList = await MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
+            ModList = await MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync(1, 10));
         }
     }
 }
