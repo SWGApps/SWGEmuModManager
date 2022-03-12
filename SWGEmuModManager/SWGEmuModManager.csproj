@@ -17,6 +17,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\swg-wpf-bottom-left-accent.png" />
+    <None Remove="Images\swg-wpf-bottom-left.png" />
+    <None Remove="Images\swg-wpf-bottom-repeat.png" />
+    <None Remove="Images\swg-wpf-bottom-right-accent.png" />
+    <None Remove="Images\swg-wpf-bottom-right.png" />
+    <None Remove="Images\swg-wpf-left-accent-bottom.png" />
+    <None Remove="Images\swg-wpf-left-accent.png" />
+    <None Remove="Images\swg-wpf-left-repeat.png" />
+    <None Remove="Images\swg-wpf-right-accent-bottom.png" />
+    <None Remove="Images\swg-wpf-right-accent.png" />
+    <None Remove="Images\swg-wpf-right-repeat.png" />
+    <None Remove="Images\swg-wpf-title-bg.png" />
+    <None Remove="Images\swg-wpf-title-end.png" />
+    <None Remove="Images\swg-wpf-top-left.png" />
+    <None Remove="Images\swg-wpf-top-repeat.png" />
+    <None Remove="Images\swg-wpf-top-right-accent.png" />
+    <None Remove="Images\swg-wpf-top-right.png" />
+    <None Remove="Images\swg-wpf-top-toolbar-left.png" />
+    <None Remove="Images\swg-wpf-top-toolbar-repeat-right.png" />
+    <None Remove="Images\swg-wpf-top-toolbar-repeat.png" />
+    <None Remove="Images\swg-wpf-top-toolbar-right.png" />
+    <None Remove="Images\swg-wpf-top-toolbar-title-end.png" />
     <None Remove="log4net.config" />
     <None Remove="no-image-available.png" />
   </ItemGroup>
@@ -34,6 +56,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\swg-wpf-bottom-left-accent.png" />
+    <Resource Include="Images\swg-wpf-bottom-left.png" />
+    <Resource Include="Images\swg-wpf-bottom-repeat.png" />
+    <Resource Include="Images\swg-wpf-bottom-right-accent.png" />
+    <Resource Include="Images\swg-wpf-bottom-right.png" />
+    <Resource Include="Images\swg-wpf-left-accent-bottom.png" />
+    <Resource Include="Images\swg-wpf-left-accent.png" />
+    <Resource Include="Images\swg-wpf-left-repeat.png" />
+    <Resource Include="Images\swg-wpf-right-accent-bottom.png" />
+    <Resource Include="Images\swg-wpf-right-accent.png" />
+    <Resource Include="Images\swg-wpf-right-repeat.png" />
+    <Resource Include="Images\swg-wpf-title-bg.png" />
+    <Resource Include="Images\swg-wpf-title-end.png" />
+    <Resource Include="Images\swg-wpf-top-left.png" />
+    <Resource Include="Images\swg-wpf-top-repeat.png" />
+    <Resource Include="Images\swg-wpf-top-right-accent.png" />
+    <Resource Include="Images\swg-wpf-top-right.png" />
+    <Resource Include="Images\swg-wpf-top-toolbar-left.png" />
+    <Resource Include="Images\swg-wpf-top-toolbar-repeat-right.png" />
+    <Resource Include="Images\swg-wpf-top-toolbar-repeat.png" />
+    <Resource Include="Images\swg-wpf-top-toolbar-right.png" />
+    <Resource Include="Images\swg-wpf-top-toolbar-title-end.png" />
     <Resource Include="no-image-available.png" />
   </ItemGroup>
 

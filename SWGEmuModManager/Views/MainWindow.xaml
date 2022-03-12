@@ -7,38 +7,140 @@
         xmlns:uc="clr-namespace:SWGEmuModManager.Views.UserControls" 
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="SWGEmu Mod Manager" Height="450" Width="800" MinWidth="700" MinHeight="350"
-        Style="{DynamicResource CustomWindowStyle}" WindowStartupLocation="CenterScreen" Initialized="Window_Initialized">
+        Title="SWGEmu Mod Manager" Height="450" Width="800" MinWidth="700" MinHeight="350" Background="Transparent" WindowStyle="None" AllowsTransparency="True" MouseDown="Window_MouseDown">
 
     <Window.Resources>
         <Style TargetType="ListViewItem">
             <Setter Property="FontSize" Value="10"/>
         </Style>
+
+        <Style x:Key="WindowTitle" TargetType="{x:Type TypeName=TextBlock}">
+            
+        </Style>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
+            <RowDefinition Height="35" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="20" />
+            <RowDefinition Height="18" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="13" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="13" />
         </Grid.ColumnDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-            <MenuItem Header="_Config">
-                <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
-            </MenuItem>
-            <MenuItem Header="_Dev">
-                <MenuItem Header="Generate Mod Manifest" Command="{Binding Path=GenerateModManifestMenuItem}"></MenuItem>
-            </MenuItem>
-        </Menu>
+        <Image Source="/Images/swg-wpf-top-left.png" Grid.Row="0" Grid.Column="0" />
 
-        <uc:ModList Grid.Column="1" Grid.Row="2"></uc:ModList>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="19" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="2" />
+            </Grid.RowDefinitions>
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="23" />
+                <ColumnDefinition Width="96" />
+                <ColumnDefinition Width="7" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <StackPanel.Background>
+                    <ImageBrush ImageSource="/Images/swg-wpf-title-bg.png" Stretch="Fill"/>
+                </StackPanel.Background>
+                <TextBlock Style="{DynamicResource ResourceKey=WindowTitle}" Text="SWGEmu Mod Manager" Margin="-6,1,0,0" Foreground="#FF003953" />
+            </StackPanel>
+
+            <Image Source="/Images/swg-wpf-title-end.png" Grid.Row="0" Grid.Column="1" />
+            <Image Source="/Images/swg-wpf-top-repeat.png" Grid.Row="0" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
+            <Image Source="/Images/swg-wpf-top-right-accent.png" Grid.Row="0" Grid.Column="3" />
+
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Source="/Images/swg-wpf-top-toolbar-left.png" Grid.Row="0" Grid.Column="0" />
+                <Image Source="/Images/swg-wpf-top-toolbar-repeat.png" Grid.Row="0" Grid.Column="1" Stretch="Fill" />
+            </Grid>
+            <Image Source="/Images/swg-wpf-top-toolbar-title-end.png" Grid.Row="1" Grid.Column="1" />
+            <Image Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="1" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
+            <Image Source="/Images/swg-wpf-top-toolbar-right.png" Grid.Row="1" Grid.Column="3" />
+            <Image Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="2" Stretch="Fill" Grid.ColumnSpan="4" />
+        </Grid>
+
+        <Image Source="/Images/swg-wpf-top-right.png" Grid.Row="0" Grid.Column="2" />
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="21" />
+                <RowDefinition Height="29" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="13" />
+            </Grid.RowDefinitions>
+
+            <Image Source="/Images/swg-wpf-left-repeat.png" Grid.Row="0" Grid.Column="0" StretchDirection="UpOnly" Stretch="Fill" />
+            <Image Source="/Images/swg-wpf-left-accent.png" Grid.Row="1" Grid.Column="0" />
+            <Image Source="/Images/swg-wpf-left-repeat.png" Grid.Row="2" Grid.Column="0" StretchDirection="UpOnly" Stretch="Fill" />
+            <Image Source="/Images/swg-wpf-left-accent-bottom.png" Grid.Row="3" Grid.Column="0" />
+        </Grid>
+
+        <Image Source="/Images/swg-wpf-bottom-left.png" Grid.Row="2" Grid.Column="0" />
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="17" />
+            </Grid.ColumnDefinitions>
+
+            <Image Source="/Images/swg-wpf-bottom-left-accent.png" Grid.Row="0" Grid.Column="0" />
+            <Image Source="/Images/swg-wpf-bottom-repeat.png" Grid.Row="0" Grid.Column="1" StretchDirection="UpOnly" Stretch="Fill" />
+            <Image Source="/Images/swg-wpf-bottom-right-accent.png" Grid.Row="0" Grid.Column="2" />
+        </Grid>
+
+        <Image Source="/Images/swg-wpf-bottom-right.png" Grid.Row="2" Grid.Column="2" />
+
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="24" />
+                <RowDefinition Height="36" />
+                <RowDefinition Height="16" />
+            </Grid.RowDefinitions>
+
+            <Image Source="/Images/swg-wpf-right-repeat.png" Grid.Row="0" Grid.Column="0" StretchDirection="UpOnly" Stretch="Fill" />
+            <Image Source="/Images/swg-wpf-right-accent.png" Grid.Row="1" Grid.Column="0" />
+            <Image Source="/Images/swg-wpf-right-repeat.png" Grid.Row="2" Grid.Column="0" StretchDirection="UpOnly" Stretch="Fill" />
+            <Image Source="/Images/swg-wpf-right-accent-bottom.png" Grid.Row="3" Grid.Column="0" />
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1" Background="#FF00404C">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+
+            <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                <MenuItem Header="_Config">
+                    <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
+                </MenuItem>
+                <MenuItem Header="_Dev">
+                    <MenuItem Header="Generate Mod Manifest" Command="{Binding Path=GenerateModManifestMenuItem}"></MenuItem>
+                </MenuItem>
+            </Menu>
+
+            <uc:ModList Grid.Column="1" Grid.Row="2"></uc:ModList>
+        </Grid>
     </Grid>
 </Window>

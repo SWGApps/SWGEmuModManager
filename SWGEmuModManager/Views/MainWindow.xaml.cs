@@ -1,5 +1,6 @@
 ﻿using SWGEmuModManager.Models;
 using SWGEmuModManager.ViewModels;
+using System.Windows.Input;
 
 namespace SWGEmuModManager.Views
 {
@@ -19,6 +20,14 @@ namespace SWGEmuModManager.Views
         private async void Window_Initialized(object sender, System.EventArgs e)
         {
             await ConfigFile.GenerateNewConfig();
+        }
+
+        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.DragMove();
+            }
         }
     }
 }
