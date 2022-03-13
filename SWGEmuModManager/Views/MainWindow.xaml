@@ -7,7 +7,9 @@
         xmlns:uc="clr-namespace:SWGEmuModManager.Views.UserControls" 
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="SWGEmu Mod Manager" Height="450" Width="800" MinWidth="700" MinHeight="350" Background="Transparent" WindowStyle="None" AllowsTransparency="True" MouseDown="Window_MouseDown">
+        Height="450" Width="800" MinWidth="700" MinHeight="350" Background="Transparent"
+        Title="SWGEmu Mod Manager"  WindowStyle="None" AllowsTransparency="True"
+        MouseDown="Window_MouseDown" Initialized="Window_Initialized">
 
     <Window.Resources>
         <Style TargetType="ListViewItem">
