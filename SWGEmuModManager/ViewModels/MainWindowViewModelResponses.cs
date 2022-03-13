@@ -7,6 +7,28 @@ namespace SWGEmuModManager.ViewModels;
 
 public class MainWindowViewModelResponses : ObservableObject
 {
+    public class Response<T>
+    {
+        public T? Data { get; set; }
+        public bool Succeeded { get; set; }
+        public string[]? Errors { get; set; }
+        public string? Message { get; set; }
+    }
+
+    public class PaginatedResponse<T> : Response<T>
+    {
+        public bool HasNextPage { get; set; }
+        public bool HasPreviousPage { get; set; }
+        public int FirstItemOnPage { get; set; }
+        public int LastItemOnPage { get; set; }
+        public bool IsFirstPage { get; set; }
+        public bool IsLastPage { get; set; }
+        public int PageCount { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalItemCount { get; set; }
+    }
+
     public class Mod
     {
         [JsonPropertyName("id")]

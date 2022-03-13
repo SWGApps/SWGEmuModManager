@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -16,7 +14,7 @@ namespace SWGEmuModManager.ViewModels
         public IAsyncRelayCommand GenerateModManifestMenuItem { get; }
         public IRelayCommand SetSwgDirectoryMenuItem { get; set; }
         public IAsyncRelayCommand DownloadModButton { get; }
-        public IRelayCommand ExamineButton { get; }
+        public bool ConflictContinue { get; set; }
 
         public MainWindowViewModel()
         {
@@ -25,13 +23,14 @@ namespace SWGEmuModManager.ViewModels
             GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifestAsync);
             SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
             DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
-            ExamineButton = new RelayCommand<int>(ExamineMod);
 
             MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
             ZipArchiveExtension.OnInstallStarted += InstallStarted;
             ZipArchiveExtension.OnInstallProgressUpdated += InstallProgressUpdated;
             ZipArchiveExtension.OnInstallDone += InstallDone;
             MainWindowModel.OnUninstallDone += UninstallDone;
+            ConflictDialogWindowViewModel.ClickedContinueButton += ClickedContinueButton;
+            ConflictDialogWindowViewModel.ClickedCancelButton += ClickedCancelButton;
         }
 
         private async Task InitializeAsync()
@@ -64,8 +63,6 @@ namespace SWGEmuModManager.ViewModels
             // Uninstall mod
             if (MainWindowModel.ModIsInstalled(id))
             {
-                ProgressBarVisibility = Visibility.Visible;
-
                 UninstallRequestResponse uninstallResponse = await ApiHandler.UninstallModAsync(id);
 
                 /*List<int> allowedConflicts = MainWindowModel.CheckConflictList(uninstallResponse.ConflictList);
@@ -74,6 +71,8 @@ namespace SWGEmuModManager.ViewModels
                 {
                     Trace.WriteLine(conflict);
                 });*/
+
+                ProgressBarVisibility = Visibility.Visible;
 
                 if (!string.IsNullOrEmpty(config.SwgDirectory))
                 {
@@ -101,21 +100,20 @@ namespace SWGEmuModManager.ViewModels
                 return;
             }
 
-            ProgressBarVisibility = Visibility.Visible;
-
             // Install Mod
             InstallRequestResponse installResponse = await ApiHandler.InstallModAsync(id);
 
-            List<int> conflicts = MainWindowModel.CheckConflictList(installResponse.ConflictList);
+            new ConflictDialogWindow(
+                MainWindowModel.GetConflictNames(installResponse.ConflictList!, ModList!, id))
+                .ShowDialog();
 
-            conflicts.ForEach(conflict =>
-            {
-                Trace.WriteLine(conflict);
-            });
+            if (!ConflictContinue) return;
+
+            ProgressBarVisibility = Visibility.Visible;
 
             if (!string.IsNullOrEmpty(config.SwgDirectory) && 
-                !string.IsNullOrEmpty(installResponse.DownloadUrl) && 
-                !string.IsNullOrEmpty(installResponse.Archive))
+                    !string.IsNullOrEmpty(installResponse.DownloadUrl) && 
+                    !string.IsNullOrEmpty(installResponse.Archive))
             {
                 if (installResponse.Result == "Success")
                 {
@@ -133,14 +131,6 @@ namespace SWGEmuModManager.ViewModels
             {
                 System.Windows.Forms.MessageBox.Show(text: "No SWG directory set! Please set your SWG location in Config -> Set SWG Directory and try again.",
                     caption: "No SWG Directory Set", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        private void ExamineMod(int id)
-        {
-            if (ModList is not null)
-            {
-                new ExamineWindow(modDisplay: ModList.First(x => x.Id == id)).Show();
             }
         }
 
@@ -177,7 +167,17 @@ namespace SWGEmuModManager.ViewModels
 
         private async Task RefreshModDisplay()
         {
-            ModList = await MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync());
+            ModList = await MainWindowModel.SetModDisplay(await ApiHandler.GetModsAsync(1, 10));
+        }
+
+        private void ClickedContinueButton()
+        {
+            ConflictContinue = true;
+        }
+
+        private void ClickedCancelButton()
+        {
+            ConflictContinue = false;
         }
     }
 }
