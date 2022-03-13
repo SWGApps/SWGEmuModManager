@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,7 +8,6 @@ using Microsoft.Toolkit.Mvvm.Input;
 using SWGEmuModManager.Models;
 using SWGEmuModManager.Util;
 using SWGEmuModManager.Views;
-using Application = System.Windows.Application;
 
 namespace SWGEmuModManager.ViewModels
 {
@@ -16,8 +16,8 @@ namespace SWGEmuModManager.ViewModels
         public IAsyncRelayCommand GenerateModManifestMenuItem { get; }
         public IRelayCommand SetSwgDirectoryMenuItem { get; set; }
         public IAsyncRelayCommand DownloadModButton { get; }
-        public bool ConflictContinue { get; set; }
         public IRelayCommand CloseButton { get; set; }
+        public bool ConflictContinue { get; set; }
 
         public MainWindowViewModel()
         {
@@ -31,7 +31,6 @@ namespace SWGEmuModManager.ViewModels
             MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
             ZipArchiveExtension.OnInstallStarted += InstallStarted;
             ZipArchiveExtension.OnInstallProgressUpdated += InstallProgressUpdated;
-            ZipArchiveExtension.OnInstallDone += InstallDone;
             MainWindowModel.OnUninstallDone += UninstallDone;
             ConflictDialogWindowViewModel.ClickedContinueButton += ClickedContinueButton;
             ConflictDialogWindowViewModel.ClickedCancelButton += ClickedCancelButton;
@@ -51,7 +50,8 @@ namespace SWGEmuModManager.ViewModels
 
             if (result.ToString().Trim() == "OK")
             {
-                await ManifestGenerator.GenerateModManifestAsync(modsDirectory: dialog.SelectedPath.Replace(oldValue: "\\", newValue: "/"));
+                await ManifestGenerator.GenerateModManifestAsync(
+                    modsDirectory: dialog.SelectedPath.Replace(oldValue: "\\", newValue: "/"));
             }
         }
 
@@ -67,7 +67,9 @@ namespace SWGEmuModManager.ViewModels
             // Uninstall mod
             if (MainWindowModel.ModIsInstalled(id))
             {
-                UninstallRequestResponse uninstallResponse = await ApiHandler.UninstallModAsync(id);
+                Response<UninstallRequestResponse> uninstallResponse = await ApiHandler.UninstallModAsync(id);
+
+                ProgressBarVisibility = Visibility.Visible;
 
                 /*List<int> allowedConflicts = MainWindowModel.CheckConflictList(uninstallResponse.ConflictList);
 
@@ -76,28 +78,34 @@ namespace SWGEmuModManager.ViewModels
                     Trace.WriteLine(conflict);
                 });*/
 
-                ProgressBarVisibility = Visibility.Visible;
-
                 if (!string.IsNullOrEmpty(config.SwgDirectory))
                 {
-                    if (uninstallResponse.Result == "Success")
+                    if (uninstallResponse.Succeeded)
                     {
-                        if (uninstallResponse.FileList!.Count > 0)
+                        if (uninstallResponse.Data!.FileList!.Count > 0)
                         {
-                            ProgressBarStatusLabel = $"Uninstalling {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
-                            await MainWindowModel.UninstallMod(id, uninstallResponse.FileList);
+                            ProgressBarStatusLabel = "Uninstalling " + ModList!
+                                .Where(x => x.Id == id)
+                                .Select(x => x.Name)
+                                .FirstOrDefault() + "...";
+
+                            await MainWindowModel.UninstallMod(id, uninstallResponse.Data.FileList);
                         }
                     }
                     else
                     {
-                        System.Windows.Forms.MessageBox.Show(text: $"Uninstall request response: {uninstallResponse.Result} - Reason: {uninstallResponse.Reason}",
+                        System.Windows.Forms.MessageBox.Show(text: "Uninstall request response status: " +
+                            $"{uninstallResponse.Succeeded} - Reason: {uninstallResponse.Errors![0]}", 
                             caption: "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        App.log.Error(message: $"Uninstall request response: {uninstallResponse.Result} - Reason: {uninstallResponse.Reason}");
+
+                        App.log.Error(message: $"Uninstall request response status: {uninstallResponse.Succeeded}" +
+                            $" - Reason: {uninstallResponse.Errors[0]}");
                     }
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show(text: "No SWG directory set! Please set your SWG location in Config -> Set SWG Directory and try again.",
+                    System.Windows.Forms.MessageBox.Show(text: "No SWG directory set! " +
+                        "Please set your SWG location in Config -> Set SWG Directory and try again.", 
                         caption: "No SWG Directory Set", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
 
@@ -105,37 +113,54 @@ namespace SWGEmuModManager.ViewModels
             }
 
             // Install Mod
-            InstallRequestResponse installResponse = await ApiHandler.InstallModAsync(id);
+            Response<InstallRequestResponse> installResponse = await ApiHandler.InstallModAsync(id);
 
-            new ConflictDialogWindow(
-                MainWindowModel.GetConflictNames(installResponse.ConflictList!, ModList!, id))
-                .ShowDialog();
+            // Set continue before getting conflicts, it will be set during conflict check
+            // if conflicts are found
+            ConflictContinue = true;
+
+            List<string> conflictNames = MainWindowModel.GetConflictNames(installResponse.Data!.ConflictList!, ModList!, id);
+
+            if (conflictNames.Count > 0)
+            {
+                new ConflictDialogWindow(conflictNames).ShowDialog();
+            }
 
             if (!ConflictContinue) return;
 
             ProgressBarVisibility = Visibility.Visible;
 
             if (!string.IsNullOrEmpty(config.SwgDirectory) && 
-                    !string.IsNullOrEmpty(installResponse.DownloadUrl) && 
-                    !string.IsNullOrEmpty(installResponse.Archive))
+                    !string.IsNullOrEmpty(installResponse.Data.DownloadUrl) && 
+                    !string.IsNullOrEmpty(installResponse.Data.Archive))
             {
-                if (installResponse.Result == "Success")
+                if (installResponse.Succeeded)
                 {
-                    ProgressBarStatusLabel = $"Downloading {ModList!.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault()}...";
-                    await MainWindowModel.DownloadModAsync(id, installResponse.DownloadUrl, installResponse.Archive);
+                    ProgressBarStatusLabel = "Downloading " + ModList!
+                        .Where(x => x.Id == id)
+                        .Select(x => x.Name)
+                        .FirstOrDefault() + "...";
+
+                    await MainWindowModel.DownloadModAsync(id, installResponse.Data.DownloadUrl, installResponse.Data.Archive);
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show(text: $"Install request response: {installResponse.Result} - Reason: {installResponse.Reason}",
+                    System.Windows.Forms.MessageBox.Show(text: "Install request response status: " +
+                        $"{installResponse.Succeeded} - Reason: {installResponse.Errors![0]}",
                         caption: "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    App.log.Error(message: $"Install request response: {installResponse.Result} - Reason: {installResponse.Reason}");
+
+                    App.log.Error(message: "Install request response status: " +
+                        $"{installResponse.Succeeded} - Reason: {installResponse.Errors[0]}");
                 }
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(text: "No SWG directory set! Please set your SWG location in Config -> Set SWG Directory and try again.",
+                System.Windows.Forms.MessageBox.Show(text: "No SWG directory set! " +
+                    "Please set your SWG location in Config -> Set SWG Directory and try again.",
                     caption: "No SWG Directory Set", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+
+            await InstallDone(id);
         }
 
         private void DownloadProgressUpdated(long bytesReceived, long totalBytesToReceive, int progressPercentage)
@@ -153,10 +178,11 @@ namespace SWGEmuModManager.ViewModels
             ProgressBarPercentage = (currentFile / totalFiles) * 1000;
         }
 
-        private async void InstallDone()
+        private async Task InstallDone(int id)
         {
             System.Threading.Thread.Sleep(millisecondsTimeout: 1000);
             ProgressBarVisibility = Visibility.Collapsed;
+            await ApiHandler.AddDownloadAsync(id);
 
             await RefreshModDisplay();
         }

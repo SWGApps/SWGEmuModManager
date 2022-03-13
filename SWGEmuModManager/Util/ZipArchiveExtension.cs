@@ -10,7 +10,6 @@ public static class ZipArchiveExtension
 {
     public static Action? OnInstallStarted { get; set; }
     public static Action<int, int>? OnInstallProgressUpdated { get; set; }
-    public static Action? OnInstallDone { get; set; }
 
     public static async Task<string> CreateZipFileAsync(string directory, string modName)
     {
@@ -92,8 +91,6 @@ public static class ZipArchiveExtension
 
             i++;
         }
-
-        OnInstallDone?.Invoke();
     }
 }
 
