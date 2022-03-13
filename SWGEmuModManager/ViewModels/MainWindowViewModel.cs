@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -6,6 +7,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using SWGEmuModManager.Models;
 using SWGEmuModManager.Util;
 using SWGEmuModManager.Views;
+using Application = System.Windows.Application;
 
 namespace SWGEmuModManager.ViewModels
 {
@@ -15,6 +17,7 @@ namespace SWGEmuModManager.ViewModels
         public IRelayCommand SetSwgDirectoryMenuItem { get; set; }
         public IAsyncRelayCommand DownloadModButton { get; }
         public bool ConflictContinue { get; set; }
+        public IRelayCommand CloseButton { get; set; }
 
         public MainWindowViewModel()
         {
@@ -23,6 +26,7 @@ namespace SWGEmuModManager.ViewModels
             GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifestAsync);
             SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
             DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
+            CloseButton = new RelayCommand(() => Environment.Exit(0));
 
             MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
             ZipArchiveExtension.OnInstallStarted += InstallStarted;

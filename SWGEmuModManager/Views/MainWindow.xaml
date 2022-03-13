@@ -74,7 +74,10 @@
             <Image Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="2" Stretch="Fill" Grid.ColumnSpan="4" />
         </Grid>
 
-        <Image Source="/Images/swg-wpf-top-right.png" Grid.Row="0" Grid.Column="2" />
+        <Button Command="{Binding CloseButton}" Grid.Row="0" Grid.Column="2" Padding="0" Margin="0" BorderThickness="0">
+            <Image Source="/Images/swg-wpf-top-right.png" />
+        </Button>
+        
 
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
