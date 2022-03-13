@@ -9,18 +9,18 @@
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Height="450" Width="800" MinWidth="700" MinHeight="350" Background="Transparent"
-        Title="SWGEmu Mod Manager"  WindowStyle="None" AllowsTransparency="True"
-        MouseDown="Window_MouseDown" Initialized="Window_Initialized">
+        Title="SWGEmu Mod Manager"  WindowStyle="None" AllowsTransparency="True" 
+        Initialized="Window_Initialized" ResizeMode="CanResize">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <util:MathConverter x:Key="MathConverter" />
 
         <Style TargetType="ListViewItem">
             <Setter Property="FontSize" Value="10"/>
-        </Style>
-
-        <Style x:Key="WindowTitle" TargetType="{x:Type TypeName=TextBlock}">
-
         </Style>
 
         <Style TargetType="{x:Type Button}">
@@ -57,17 +57,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-
-        <!--<Style x:Key="ExitButtonStyle" TargetType="{x:Type Button}">
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                    <Setter Property="Foreground" Value="Transparent" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>-->
     </Window.Resources>
 
     <Grid>
@@ -82,7 +71,8 @@
             <ColumnDefinition Width="13" />
         </Grid.ColumnDefinitions>
 
-        <Image Source="/Images/swg-wpf-top-left.png" Grid.Row="0" Grid.Column="0" />
+        <uc:TitleBarLeftCorner Grid.Row="0" Grid.Column="0" />
+        <uc:TitleBar Grid.Row="0" Grid.Column="1" />
 
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>
@@ -98,17 +88,6 @@
                 <ColumnDefinition Width="7" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0">
-                <StackPanel.Background>
-                    <ImageBrush ImageSource="/Images/swg-wpf-title-bg.png" Stretch="Fill"/>
-                </StackPanel.Background>
-                <TextBlock Style="{DynamicResource ResourceKey=WindowTitle}" Text="SWGEmu Mod Manager" Margin="-6,1,0,0" Foreground="#FF003953" />
-            </StackPanel>
-
-            <Image Source="/Images/swg-wpf-title-end.png" Grid.Row="0" Grid.Column="1" />
-            <Image Source="/Images/swg-wpf-top-repeat.png" Grid.Row="0" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
-            <Image Source="/Images/swg-wpf-top-right-accent.png" Grid.Row="0" Grid.Column="3" />
-
             <Grid Grid.Row="1" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="25" />
@@ -123,10 +102,7 @@
             <Image Grid.Column="0" Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="2" Stretch="Fill" Grid.ColumnSpan="4" />
         </Grid>
 
-        <Button Command="{Binding CloseButton}" Grid.Row="0" Grid.Column="2" 
-                Padding="0" Margin="0" BorderThickness="0" Background="Transparent" >
-            <Image Source="/Images/swg-wpf-top-right.png" />
-        </Button>
+        <uc:TitleBarRightCorner Grid.Row="0" Grid.Column="2"/>
 
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>

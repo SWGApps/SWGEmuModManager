@@ -189,7 +189,6 @@ namespace SWGEmuModManager.ViewModels
 
         private async void UninstallDone()
         {
-            System.Threading.Thread.Sleep(millisecondsTimeout: 1000);
             ProgressBarVisibility = Visibility.Collapsed;
 
             await RefreshModDisplay();

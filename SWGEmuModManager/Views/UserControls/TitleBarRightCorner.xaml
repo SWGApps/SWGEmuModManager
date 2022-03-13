@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="SWGEmuModManager.Views.UserControls.TitleBarRightCorner"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="166" MouseDown="UserControl_MouseDown">
+    <Grid>
+        <Button Command="{Binding CloseButton}" Padding="0" 
+            Margin="0" BorderThickness="0" Background="Transparent" >
+
+            <Image Source="/Images/swg-wpf-top-right.png" />
+        </Button>
+    </Grid>
+</UserControl>
