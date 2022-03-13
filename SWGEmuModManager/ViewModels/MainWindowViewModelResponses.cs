@@ -15,7 +15,6 @@ public class MainWindowViewModelResponses : ObservableObject
         public string? Message { get; set; }
     }
 
-
     public class PaginatedResponse<T> : Response<T>
     {
         public bool HasNextPage { get; set; }
