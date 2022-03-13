@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SWGEmuModManager.ViewModels" 
-        xmlns:uc="clr-namespace:SWGEmuModManager.Views.UserControls" 
+        xmlns:uc="clr-namespace:SWGEmuModManager.Views.UserControls"
+        xmlns:util="clr-namespace:SWGEmuModManager.Util"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Height="450" Width="800" MinWidth="700" MinHeight="350" Background="Transparent"
@@ -12,6 +13,8 @@
         MouseDown="Window_MouseDown" Initialized="Window_Initialized">
 
     <Window.Resources>
+        <util:MathConverter x:Key="MathConverter" />
+
         <Style TargetType="ListViewItem">
             <Setter Property="FontSize" Value="10"/>
         </Style>
@@ -19,6 +22,52 @@
         <Style x:Key="WindowTitle" TargetType="{x:Type TypeName=TextBlock}">
 
         </Style>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="Border" BorderThickness="0" Background="Transparent" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Foreground" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <!--<Style x:Key="ExitButtonStyle" TargetType="{x:Type Button}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Foreground" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>-->
     </Window.Resources>
 
     <Grid>
@@ -71,13 +120,13 @@
             <Image Source="/Images/swg-wpf-top-toolbar-title-end.png" Grid.Row="1" Grid.Column="1" />
             <Image Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="1" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
             <Image Source="/Images/swg-wpf-top-toolbar-right.png" Grid.Row="1" Grid.Column="3" />
-            <Image Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="2" Stretch="Fill" Grid.ColumnSpan="4" />
+            <Image Grid.Column="0" Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="2" Stretch="Fill" Grid.ColumnSpan="4" />
         </Grid>
 
-        <Button Command="{Binding CloseButton}" Grid.Row="0" Grid.Column="2" Padding="0" Margin="0" BorderThickness="0">
+        <Button Command="{Binding CloseButton}" Grid.Row="0" Grid.Column="2" 
+                Padding="0" Margin="0" BorderThickness="0" Background="Transparent" >
             <Image Source="/Images/swg-wpf-top-right.png" />
         </Button>
-        
 
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
@@ -127,7 +176,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="20" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="20" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
             <Menu Grid.Row="0" Grid.Column="0">
@@ -151,6 +200,22 @@
                     <uc:ModList></uc:ModList>
                 </Grid>
             </Border>
+
+            <Grid Grid.Row="2" Margin="0 5 0 0" Visibility="{Binding Path=ProgressBarVisibility}">
+                <StackPanel>
+                    <Label Content="{Binding ProgressBarStatusLabel, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Grid>
+                        <ProgressBar Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" Height="20" 
+                            Value="{Binding Path=ProgressBarPercentage}" Visibility="Visible" />
+
+                        <!-- Progress bar pecentage based on a value of 1000, so use converter to divide by 10 -->
+                        <TextBlock Text="{Binding Path=ProgressBarPercentage, StringFormat={}{0:0}%, 
+                            Converter={StaticResource ResourceKey=MathConverter}, ConverterParameter=/10}" 
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
