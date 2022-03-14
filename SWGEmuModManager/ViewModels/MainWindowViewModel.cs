@@ -17,6 +17,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     public IRelayCommand SetSwgDirectoryMenuItem { get; set; }
     public IAsyncRelayCommand DownloadModButton { get; }
     public IRelayCommand CloseButton { get; set; }
+    public IAsyncRelayCommand FilterNameButton { get; set; } 
     public bool ConflictContinue { get; set; }
 
     public MainWindowViewModel()
@@ -27,6 +28,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
         DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
         CloseButton = new RelayCommand(() => Environment.Exit(0));
+        FilterNameButton = new AsyncRelayCommand(FilterByName);
 
         MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
         ZipArchiveExtension.OnInstallStarted += InstallStarted;
@@ -235,5 +237,11 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     {
         vmp.ModList = await MainWindowModel.SetModDisplay(
             await ApiHandler.GetModsAsync(1, 10, vmp.SortType, vmp.SortOrder!, vmp.FilterValue!));
+    }
+
+    private async Task FilterByName()
+    {
+        ModList = await MainWindowModel.SetModDisplay(
+            await ApiHandler.GetModsAsync(1, 10, SortType, SortOrder!, FilterValue!));
     }
 }

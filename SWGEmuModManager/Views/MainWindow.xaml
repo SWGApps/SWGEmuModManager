@@ -215,11 +215,11 @@
 
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" >
-                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding FilterOrder}">
+                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding SortOrder}">
                         <ComboBoxItem>Ascending</ComboBoxItem>
                         <ComboBoxItem>Descending</ComboBoxItem>
                     </ComboBox>
-                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="75" Height="20" SelectedIndex="{Binding FilterType}">
+                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="75" Height="20" SelectedIndex="{Binding SortType}">
                         <ComboBoxItem>Name</ComboBoxItem>
                         <ComboBoxItem>Author</ComboBoxItem>
                         <ComboBoxItem>Version</ComboBoxItem>
@@ -258,10 +258,10 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="{Binding FilterMargin}">
-                    <Button Style="{StaticResource SWGButton}" Margin="0 0 10 0">Search</Button>
+                    <Button Command="{Binding FilterNameButton}" Style="{StaticResource SWGButton}" Margin="0 0 10 0">Search</Button>
                     <Grid>
-                        <TextBox Text="{Binding SortValue, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="20"/>
-                        <TextBlock Text="{Binding SortWatermark}">
+                        <TextBox Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="20"/>
+                        <TextBlock Text="{Binding FilterWatermark}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockPlaceholder}"/>
                             </TextBlock.Style>
