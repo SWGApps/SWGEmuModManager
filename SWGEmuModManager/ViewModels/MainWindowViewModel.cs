@@ -35,9 +35,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         ConflictDialogWindowViewModel.ClickedContinueButton += ClickedContinueButton;
         ConflictDialogWindowViewModel.ClickedCancelButton += ClickedCancelButton;
 
-        SortWatermark = "Sort by name";
-        FilterType = (int)ViewModels.FilterType.Name;
-        FilterOrder = 0;
+        FilterWatermark = "Sort by name";
     }
 
     private async Task InitializeAsync()
@@ -202,7 +200,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     private async Task RefreshModDisplay()
     {
         ModList = await MainWindowModel.SetModDisplay(
-            await ApiHandler.GetModsAsync(1, 10, FilterType, FilterOrder!, SortValue!));
+            await ApiHandler.GetModsAsync(1, 10, SortType, SortOrder!, FilterValue!));
     }
 
     private void ClickedContinueButton()
@@ -217,9 +215,9 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
 
     internal static void WatermarkIntercept(MainWindowViewModelProperties vmp)
     {
-        if (vmp.SortValue is not null)
+        if (vmp.FilterValue is not null)
         {
-            vmp.SortWatermark = (vmp.SortValue!.Length < 1) ? "Filter" : string.Empty;
+            vmp.FilterWatermark = (vmp.FilterValue!.Length < 1) ? "Filter" : string.Empty;
         }
     }
 
@@ -233,9 +231,9 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         };
     }
 
-    internal static async void Filter(MainWindowViewModelProperties vmp)
+    internal static async void Sort(MainWindowViewModelProperties vmp)
     {
         vmp.ModList = await MainWindowModel.SetModDisplay(
-            await ApiHandler.GetModsAsync(1, 10, vmp.FilterType, vmp.FilterOrder!, vmp.SortValue!));
+            await ApiHandler.GetModsAsync(1, 10, vmp.SortType, vmp.SortOrder!, vmp.FilterValue!));
     }
 }

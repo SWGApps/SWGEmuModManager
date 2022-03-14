@@ -2,14 +2,6 @@
 using System.Windows;
 
 namespace SWGEmuModManager.ViewModels;
-enum FilterType
-{
-    Name,
-    Author,
-    Version,
-    Downloads,
-    Released
-}
 
 internal class MainWindowViewModelProperties : MainWindowViewModelResponses
 {
@@ -18,11 +10,11 @@ internal class MainWindowViewModelProperties : MainWindowViewModelResponses
     private Visibility? _progessBarVisibility;
     private string? _progressBarStatusLabel;
     private string? _installButtonText;
-    private int _filterType;
-    private int _filterOrder;
+    private int _sortType;
+    private int _sortOrder;
     private Thickness? _filterMargin;
-    private string? _sortWatermark;
-    private string? _sortValue;
+    private string? _filterWatermark;
+    private string? _filterValue;
 
     public List<ModsDisplay>? ModList
     {
@@ -58,38 +50,38 @@ internal class MainWindowViewModelProperties : MainWindowViewModelResponses
         set => SetProperty(field: ref _installButtonText, value);
     }
 
-    public int FilterType
+    public int SortType
     {
-        get => _filterType;
+        get => _sortType;
         set
         {
-            SetProperty(field: ref _filterType, value);
-            MainWindowViewModel.Filter(this);
+            SetProperty(field: ref _sortType, value);
+            MainWindowViewModel.Sort(this);
         }
     }
 
-    public int FilterOrder
+    public int SortOrder
     {
-        get => _filterOrder;
+        get => _sortOrder;
         set
         {
-            SetProperty(field: ref _filterOrder, value);
-            MainWindowViewModel.Filter(this);
+            SetProperty(field: ref _sortOrder, value);
+            MainWindowViewModel.Sort(this);
         }
     }
 
-    public string? SortWatermark
+    public string? FilterWatermark
     {
-        get => _sortWatermark;
-        set => SetProperty(field: ref _sortWatermark, value);
+        get => _filterWatermark;
+        set => SetProperty(field: ref _filterWatermark, value);
     }
 
-    public string? SortValue
+    public string? FilterValue
     {
-        get => _sortValue;
+        get => _filterValue;
         set
         {
-            SetProperty(field: ref _sortValue, value);
+            SetProperty(field: ref _filterValue, value);
             MainWindowViewModel.WatermarkIntercept(this);
         }
     }
