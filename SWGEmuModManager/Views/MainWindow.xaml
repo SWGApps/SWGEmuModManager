@@ -57,6 +57,50 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="SWGButton" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#FF70d9df"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Polygon 
+                                x:Name="poly"
+                                Points="0,0 55,0 60,5 60,18 5,18 0,13"  
+                                Stroke="#FF489DB2"
+                                StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Polygon.Fill>
+                                    <SolidColorBrush Color="#FF093F4B"/>
+                                </Polygon.Fill>
+                            </Polygon>
+                            <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF4adcf3"/>
+                                <Setter Property="Foreground" Value="#FF0e3d45"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF093F4B"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF10c3d7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TextBlockPlaceholder" TargetType="{x:Type TextBlock}">
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="DarkGray"/>
+            <Setter Property="Margin" Value="5,1,0,0"/>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -150,12 +194,17 @@
 
         <Grid Grid.Row="1" Grid.Column="1" Background="#FF00404C">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20" />
+                <RowDefinition Height="25" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Menu Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Menu Grid.Column="0" Grid.Row="0" Margin="0 5 0 0">
                 <MenuItem Header="_Config">
                     <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
                 </MenuItem>
@@ -164,7 +213,23 @@
                 </MenuItem>
             </Menu>
 
-            <Border Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" >
+                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding FilterOrder}">
+                        <ComboBoxItem>Ascending</ComboBoxItem>
+                        <ComboBoxItem>Descending</ComboBoxItem>
+                    </ComboBox>
+                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="75" Height="20" SelectedIndex="{Binding FilterType}">
+                        <ComboBoxItem>Name</ComboBoxItem>
+                        <ComboBoxItem>Author</ComboBoxItem>
+                        <ComboBoxItem>Version</ComboBoxItem>
+                        <ComboBoxItem>Downloads</ComboBoxItem>
+                        <ComboBoxItem>Released</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
                 <Grid>
                     <Border Background="#FF00404C" ClipToBounds="True" CornerRadius="4" Margin="4,4,26,4">
                         <Border Background="Transparent" BorderBrush="#FF00232c" BorderThickness="35 40 35 40" Margin="-40" CornerRadius="4">
@@ -177,18 +242,30 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="2" Margin="0 5 0 0" Visibility="{Binding Path=ProgressBarVisibility}">
-                <StackPanel>
-                    <Label Content="{Binding ProgressBarStatusLabel, UpdateSourceTrigger=PropertyChanged}" />
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0 0 0" >
+                <StackPanel Visibility="{Binding Path=ProgressBarVisibility}" Margin="0 0 0 0">
+                    <Label Margin="2 0 0 0" Content="{Binding ProgressBarStatusLabel, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Grid>
-                        <ProgressBar Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" Height="20" 
-                            Value="{Binding Path=ProgressBarPercentage}" Visibility="Visible" />
+                        <ProgressBar Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" Height="15" 
+                            Value="{Binding Path=ProgressBarPercentage}" Margin="5 0 5 0" />
 
-                        <!-- Progress bar pecentage based on a value of 1000, so use converter to divide by 10 -->
+                        <!-- Progress bar percentage based on a value of 1000, so use converter to divide by 10 -->
                         <TextBlock Text="{Binding Path=ProgressBarPercentage, StringFormat={}{0:0}%, 
                             Converter={StaticResource ResourceKey=MathConverter}, ConverterParameter=/10}" 
                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="{Binding FilterMargin}">
+                    <Button Style="{StaticResource SWGButton}" Margin="0 0 10 0">Search</Button>
+                    <Grid>
+                        <TextBox Text="{Binding SortValue, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="20"/>
+                        <TextBlock Text="{Binding SortWatermark}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockPlaceholder}"/>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </Grid>
                 </StackPanel>
             </Grid>

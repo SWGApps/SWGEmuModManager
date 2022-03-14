@@ -44,10 +44,14 @@ internal class ApiHandler : MainWindowViewModelResponses
         return (T)Activator.CreateInstance(typeof(T))!;
     }
 
-    public static async Task<PaginatedResponse<List<Mod>>> GetModsAsync(int startPage, int totalItems)
+    public static async Task<PaginatedResponse<List<Mod>>> GetModsAsync
+        (int startPage, int totalItems, int filterType, int filterOrder, string sortValue)
     {
+        if (string.IsNullOrWhiteSpace(sortValue)) sortValue = "null";
+
         return await GetDeserializedResponse<PaginatedResponse<List<Mod>>>
-            (new Uri($"{_apiUrl}/Mods/{startPage}/{totalItems}")) ?? new PaginatedResponse<List<Mod>>();
+            (new Uri($"{_apiUrl}/Mods/{startPage}/{totalItems}/{filterType}/{filterOrder}/{sortValue}")) 
+               ?? new PaginatedResponse<List<Mod>>();
     }
 
     public static async Task<Response<object>> AddDownloadAsync(int id)
