@@ -28,7 +28,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         SetSwgDirectoryMenuItem = new RelayCommand(SetSwgDirectory);
         DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
         CloseButton = new RelayCommand(() => Environment.Exit(0));
-        FilterNameButton = new AsyncRelayCommand(FilterByName);
+        FilterNameButton = new AsyncRelayCommand(RefreshModDisplay);
 
         MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
         ZipArchiveExtension.OnInstallStarted += InstallStarted;
@@ -36,8 +36,6 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         MainWindowModel.OnUninstallDone += UninstallDone;
         ConflictDialogWindowViewModel.ClickedContinueButton += ClickedContinueButton;
         ConflictDialogWindowViewModel.ClickedCancelButton += ClickedCancelButton;
-
-        FilterWatermark = "Sort by name";
     }
 
     private async Task InitializeAsync()
@@ -45,6 +43,25 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         ProgressBarVisibility = Visibility.Collapsed;
         await RefreshModDisplay();
         InstallButtonText = "Install";
+        FilterWatermark = "Filter By Name";
+
+        if (HasNextPage)
+        {
+            NextPageButtonVisibility = Visibility.Visible;
+        }
+        else
+        {
+            NextPageButtonVisibility = Visibility.Collapsed;
+        }
+
+        if (HasPreviousPage)
+        {
+            PreviousPageButtonVisibility = Visibility.Visible;
+        }
+        else
+        {
+            PreviousPageButtonVisibility = Visibility.Collapsed;
+        }
     }
 
     private async Task GenerateModManifestAsync()
@@ -123,7 +140,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         // if conflicts are found
         ConflictContinue = true;
 
-        List<string> conflictNames = MainWindowModel.GetConflictNames(installResponse.Data!.ConflictList!, ModList!, id);
+        List<string> conflictNames = MainWindowModel.GetConflictNames(installResponse.Data!.ConflictList!, ModList!.ToList(), id);
 
         if (conflictNames.Count > 0)
         {
@@ -201,8 +218,21 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
 
     private async Task RefreshModDisplay()
     {
-        ModList = await MainWindowModel.SetModDisplay(
-            await ApiHandler.GetModsAsync(1, 10, SortType, SortOrder!, FilterValue!));
+        PaginatedResponse<List<Mod>> mods = await ApiHandler.GetModsAsync
+            (1, 10, SortType, SortOrder!, FilterValue!);
+
+        HasNextPage = mods.HasNextPage;
+        HasPreviousPage = mods.HasPreviousPage;
+        FirstItemOnPage = mods.FirstItemOnPage;
+        LastItemOnPage = mods.LastItemOnPage;
+        IsFirstPage = mods.IsFirstPage;
+        IsLastPage = mods.IsLastPage;
+        PageCount = mods.PageCount;
+        PageNumber = mods.PageNumber;
+        PageSize = mods.PageSize;
+        TotalItemCount = mods.TotalItemCount;
+
+        ModList = await MainWindowModel.SetModDisplay(mods);
     }
 
     private void ClickedContinueButton()
@@ -219,7 +249,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     {
         if (vmp.FilterValue is not null)
         {
-            vmp.FilterWatermark = (vmp.FilterValue!.Length < 1) ? "Filter" : string.Empty;
+            vmp.FilterWatermark = (vmp.FilterValue!.Length < 1) ? "Filter By Name" : string.Empty;
         }
     }
 
@@ -235,13 +265,41 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
 
     internal static async void Sort(MainWindowViewModelProperties vmp)
     {
-        vmp.ModList = await MainWindowModel.SetModDisplay(
-            await ApiHandler.GetModsAsync(1, 10, vmp.SortType, vmp.SortOrder!, vmp.FilterValue!));
+        PaginatedResponse<List<Mod>> mods = await ApiHandler.GetModsAsync
+            (1, 10, vmp.SortType, vmp.SortOrder!, vmp.FilterValue!);
+
+        vmp.HasNextPage = mods.HasNextPage;
+        vmp.HasPreviousPage = mods.HasPreviousPage;
+        vmp.FirstItemOnPage = mods.FirstItemOnPage;
+        vmp.LastItemOnPage = mods.LastItemOnPage;
+        vmp.IsFirstPage = mods.IsFirstPage;
+        vmp.IsLastPage = mods.IsLastPage;
+        vmp.PageCount = mods.PageCount;
+        vmp.PageNumber = mods.PageNumber;
+        vmp.PageSize = mods.PageSize;
+        vmp.TotalItemCount = mods.TotalItemCount;
+
+        vmp.ModList = await MainWindowModel.SetModDisplay(mods);
     }
 
-    private async Task FilterByName()
+    internal static void OnModListUpdated(MainWindowViewModelProperties vmp)
     {
-        ModList = await MainWindowModel.SetModDisplay(
-            await ApiHandler.GetModsAsync(1, 10, SortType, SortOrder!, FilterValue!));
+        if (vmp.HasNextPage)
+        {
+            vmp.NextPageButtonVisibility = Visibility.Visible;
+        }
+        else
+        {
+            vmp.NextPageButtonVisibility = Visibility.Collapsed;
+        }
+
+        if (vmp.HasPreviousPage)
+        {
+            vmp.PreviousPageButtonVisibility = Visibility.Visible;
+        }
+        else
+        {
+            vmp.PreviousPageButtonVisibility = Visibility.Collapsed;
+        }
     }
 }

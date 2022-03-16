@@ -73,34 +73,15 @@ public class MainWindowViewModelResponses : ObservableObject
 
     public class ModsDisplay
     {
-        [JsonPropertyName("id")]
         public int? Id { get; set; }
-
-        [JsonPropertyName("name")]
         public string? Name { get; set; }
-
-        [JsonPropertyName("bannerUrl")]
         public string? BannerUrl { get; set; }
-
-        [JsonPropertyName("description")]
         public string? Description { get; set; }
-
-        [JsonPropertyName("author")]
         public string? Author { get; set; }
-
-        [JsonPropertyName("version")]
         public string? Version { get; set; }
-
-        [JsonPropertyName("source")]
         public string? Source { get; set; }
-
-        [JsonPropertyName("size")]
         public string? Size { get; set; }
-
-        [JsonPropertyName("downloads")]
         public string? Downloads { get; set; }
-
-        [JsonPropertyName("released")]
         public string? Released { get; set; }
     }
 

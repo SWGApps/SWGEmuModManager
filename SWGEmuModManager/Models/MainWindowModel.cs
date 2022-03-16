@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,10 +18,10 @@ internal static class MainWindowModel
     public static Action<int, int>? OnUninstallProgressUpdated { get; set; }
     public static Action? OnUninstallDone { get; set; }
 
-    public static async Task<List<MainWindowViewModelResponses.ModsDisplay>> SetModDisplay(
+    public static async Task<ObservableCollection<MainWindowViewModelResponses.ModsDisplay>> SetModDisplay(
         MainWindowViewModelResponses.PaginatedResponse<List<MainWindowViewModelResponses.Mod>>? mods)
     {
-        List<MainWindowViewModelResponses.ModsDisplay> modsDisplay = new();
+        ObservableCollection<MainWindowViewModelResponses.ModsDisplay> modsDisplay = new();
 
         await Task.Run(() =>
         {
@@ -40,7 +41,7 @@ internal static class MainWindowModel
                     Source = $"{mod.Source}",
                     Size = $"{UnitConversion.ToSize((long)mod.Size!, unit: UnitConversion.SizeUnits.MB)}",
                     Downloads = $"{mod.Downloads}",
-                    Released = $"{mod.Released.ToString(format: "d", DateTimeFormatInfo.InvariantInfo)}"
+                    Released = $"{mod.Released.ToString(format: "d", DateTimeFormatInfo.InvariantInfo)}",
                 });
             });
         });

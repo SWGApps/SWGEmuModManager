@@ -94,6 +94,42 @@
             </Setter>
         </Style>
 
+        <Style x:Key="SWGButton2" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#FF70d9df"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Polygon 
+                                x:Name="poly"
+                                Points="0,0 85,0 90,5 90,18 5,18 0,13"  
+                                Stroke="#FF489DB2"
+                                StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Polygon.Fill>
+                                    <SolidColorBrush Color="#FF093F4B"/>
+                                </Polygon.Fill>
+                            </Polygon>
+                            <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF4adcf3"/>
+                                <Setter Property="Foreground" Value="#FF0e3d45"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF093F4B"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF10c3d7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="TextBlockPlaceholder" TargetType="{x:Type TextBlock}">
             <Setter Property="IsHitTestVisible" Value="False"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -215,6 +251,8 @@
 
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" >
+                    <Button Style="{DynamicResource SWGButton2}" Content="Next Page" Margin="0 0 10 0" Visibility="{Binding NextPageButtonVisibility}" />
+                    <Button Style="{DynamicResource SWGButton2}" Content="Previous Page" Margin="0 0 10 0" Visibility="{Binding PreviousPageButtonVisibility}" />
                     <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding SortOrder}">
                         <ComboBoxItem>Ascending</ComboBoxItem>
                         <ComboBoxItem>Descending</ComboBoxItem>
