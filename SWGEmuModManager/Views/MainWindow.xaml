@@ -12,6 +12,7 @@
         Title="SWGEmu Mod Manager"  WindowStyle="None" AllowsTransparency="True" 
         Initialized="Window_Initialized" ResizeMode="CanResize">
 
+    <!-- Allows for resizing windows with style "None" -->
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
     </WindowChrome.WindowChrome>
@@ -251,8 +252,15 @@
 
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" >
-                    <Button Style="{DynamicResource SWGButton2}" Content="Next Page" Margin="0 0 10 0" Visibility="{Binding NextPageButtonVisibility}" />
-                    <Button Style="{DynamicResource SWGButton2}" Content="Previous Page" Margin="0 0 10 0" Visibility="{Binding PreviousPageButtonVisibility}" />
+                    <ComboBox SelectedIndex="{Binding TotalItems}" Margin="0 0 10 0">
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>30</ComboBoxItem>
+                        <ComboBoxItem>40</ComboBoxItem>
+                        <ComboBoxItem>50</ComboBoxItem>
+                    </ComboBox>
+                    <Button Style="{DynamicResource SWGButton2}" Command="{Binding NextPageButton}" Content="Next Page" Margin="0 0 10 0" Visibility="{Binding NextPageButtonVisibility}" />
+                    <Button Style="{DynamicResource SWGButton2}" Command="{Binding PreviousPageButton}" Content="Previous Page" Margin="0 0 10 0" Visibility="{Binding PreviousPageButtonVisibility}" />
                     <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding SortOrder}">
                         <ComboBoxItem>Ascending</ComboBoxItem>
                         <ComboBoxItem>Descending</ComboBoxItem>

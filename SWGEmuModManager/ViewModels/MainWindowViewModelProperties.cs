@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace SWGEmuModManager.ViewModels;
@@ -16,6 +15,8 @@ internal class MainWindowViewModelProperties : MainWindowViewModelResponses
     private Thickness? _filterMargin;
     private string? _filterWatermark;
     private string? _filterValue;
+    private int _startPage;
+    private int _totalItems;
     private bool _hasNextPage;
     private bool _hasPreviousPage;
     private int _firstItemOnPage;
@@ -107,6 +108,22 @@ internal class MainWindowViewModelProperties : MainWindowViewModelResponses
     {
         get => _filterMargin;
         set => SetProperty(field: ref _filterMargin, value);
+    }
+
+    public int StartPage
+    {
+        get => _startPage;
+        set => SetProperty(field: ref _startPage, value);
+    }
+
+    public int TotalItems
+    {
+        get => _totalItems;
+        set
+        {
+            SetProperty(field: ref _totalItems, value);
+            MainWindowViewModel.Sort(this);
+        }
     }
 
     public bool HasNextPage

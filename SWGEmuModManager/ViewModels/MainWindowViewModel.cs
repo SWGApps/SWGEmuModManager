@@ -19,9 +19,14 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     public IRelayCommand CloseButton { get; set; }
     public IAsyncRelayCommand FilterNameButton { get; set; } 
     public bool ConflictContinue { get; set; }
+    public IAsyncRelayCommand NextPageButton { get; set; }
+    public IAsyncRelayCommand PreviousPageButton { get; set; }
 
     public MainWindowViewModel()
     {
+        StartPage = 1;
+        TotalItems = 0;
+
         Task.Run(InitializeAsync);
 
         GenerateModManifestMenuItem = new AsyncRelayCommand(GenerateModManifestAsync);
@@ -29,6 +34,8 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         DownloadModButton = new AsyncRelayCommand<int>(GetModDataAsync);
         CloseButton = new RelayCommand(() => Environment.Exit(0));
         FilterNameButton = new AsyncRelayCommand(RefreshModDisplay);
+        NextPageButton = new AsyncRelayCommand(NextPage);
+        PreviousPageButton = new AsyncRelayCommand(PreviousPage);
 
         MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
         ZipArchiveExtension.OnInstallStarted += InstallStarted;
@@ -219,7 +226,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     private async Task RefreshModDisplay()
     {
         PaginatedResponse<List<Mod>> mods = await ApiHandler.GetModsAsync
-            (1, 10, SortType, SortOrder!, FilterValue!);
+            (StartPage, TotalItems, SortType, SortOrder!, FilterValue!);
 
         HasNextPage = mods.HasNextPage;
         HasPreviousPage = mods.HasPreviousPage;
@@ -266,7 +273,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     internal static async void Sort(MainWindowViewModelProperties vmp)
     {
         PaginatedResponse<List<Mod>> mods = await ApiHandler.GetModsAsync
-            (1, 10, vmp.SortType, vmp.SortOrder!, vmp.FilterValue!);
+            (vmp.StartPage, vmp.TotalItems, vmp.SortType, vmp.SortOrder!, vmp.FilterValue!);
 
         vmp.HasNextPage = mods.HasNextPage;
         vmp.HasPreviousPage = mods.HasPreviousPage;
@@ -301,5 +308,17 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         {
             vmp.PreviousPageButtonVisibility = Visibility.Collapsed;
         }
+    }
+
+    private async Task NextPage()
+    {
+        StartPage += 1;
+        await RefreshModDisplay();
+    }
+
+    private async Task PreviousPage()
+    {
+        StartPage -= 1;
+        await RefreshModDisplay();
     }
 }
