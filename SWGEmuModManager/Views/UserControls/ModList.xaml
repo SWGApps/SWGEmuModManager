@@ -12,7 +12,6 @@
     
     <!-- #region WindowResources -->
     <UserControl.Resources>
-        <util:MathConverter x:Key="MathConverter" />
         <util:InstallButtonConverter x:Key="InstallButtonConverter" />
         <util:MissingImageConverter x:Key="MissingImageConverter" />
 
@@ -181,11 +180,6 @@
                                             </Button.Content>
                                         </Button>
 
-                                        <Button Style="{StaticResource SWGButton}" Command="{Binding Path=DataContext.ExamineButton, 
-                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Id}" Margin="0,4,0,4">
-                                            Examine
-                                        </Button>
-
                                         <Button Style="{StaticResource SWGButton}">
                                             <Hyperlink NavigateUri="{Binding Source}" RequestNavigate="Hyperlink_RequestNavigate">
                                                 Source
@@ -200,21 +194,7 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <Grid Grid.Row="1" Margin="0 5 0 0" Visibility="{Binding Path=ProgressBarVisibility}">
-            <StackPanel>
-                <Label Content="{Binding ProgressBarStatusLabel, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Grid>
-                    <ProgressBar Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" Height="20" 
-                        Value="{Binding Path=ProgressBarPercentage}" Visibility="Visible" />
-
-                    <!-- Progress bar pecentage based on a value of 1000, so use converter to divide by 10 -->
-                    <TextBlock Text="{Binding Path=ProgressBarPercentage, StringFormat={}{0:0}%, 
-                        Converter={StaticResource ResourceKey=MathConverter}, ConverterParameter=/10}" 
-                        HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Grid>
-            </StackPanel>
-        </Grid>
     </Grid>
 
     

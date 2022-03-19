@@ -4,20 +4,139 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SWGEmuModManager.ViewModels" 
-        xmlns:uc="clr-namespace:SWGEmuModManager.Views.UserControls" 
+        xmlns:uc="clr-namespace:SWGEmuModManager.Views.UserControls"
+        xmlns:util="clr-namespace:SWGEmuModManager.Util"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Height="450" Width="800" MinWidth="700" MinHeight="350" Background="Transparent"
-        Title="SWGEmu Mod Manager"  WindowStyle="None" AllowsTransparency="True"
-        MouseDown="Window_MouseDown" Initialized="Window_Initialized">
+        Title="SWGEmu Mod Manager"  WindowStyle="None" AllowsTransparency="True" 
+        Initialized="Window_Initialized" ResizeMode="CanResize">
+
+    <!-- Allows for resizing windows with style "None" -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
+        <util:MathConverter x:Key="MathConverter" />
+
         <Style TargetType="ListViewItem">
             <Setter Property="FontSize" Value="10"/>
         </Style>
 
-        <Style x:Key="WindowTitle" TargetType="{x:Type TypeName=TextBlock}">
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="Border" BorderThickness="0" Background="Transparent" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Foreground" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
+        <Style x:Key="SWGButton" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#FF70d9df"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Polygon 
+                                x:Name="poly"
+                                Points="0,0 55,0 60,5 60,18 5,18 0,13"  
+                                Stroke="#FF489DB2"
+                                StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Polygon.Fill>
+                                    <SolidColorBrush Color="#FF093F4B"/>
+                                </Polygon.Fill>
+                            </Polygon>
+                            <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF4adcf3"/>
+                                <Setter Property="Foreground" Value="#FF0e3d45"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF093F4B"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF10c3d7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SWGButton2" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#FF70d9df"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Polygon 
+                                x:Name="poly"
+                                Points="0,0 85,0 90,5 90,18 5,18 0,13"  
+                                Stroke="#FF489DB2"
+                                StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Polygon.Fill>
+                                    <SolidColorBrush Color="#FF093F4B"/>
+                                </Polygon.Fill>
+                            </Polygon>
+                            <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF4adcf3"/>
+                                <Setter Property="Foreground" Value="#FF0e3d45"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF093F4B"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="poly" Value="#FF10c3d7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TextBlockPlaceholder" TargetType="{x:Type TextBlock}">
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="DarkGray"/>
+            <Setter Property="Margin" Value="5,1,0,0"/>
         </Style>
     </Window.Resources>
 
@@ -33,7 +152,8 @@
             <ColumnDefinition Width="13" />
         </Grid.ColumnDefinitions>
 
-        <Image Source="/Images/swg-wpf-top-left.png" Grid.Row="0" Grid.Column="0" />
+        <uc:TitleBarLeftCorner Grid.Row="0" Grid.Column="0" />
+        <uc:TitleBar Grid.Row="0" Grid.Column="1" />
 
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>
@@ -49,17 +169,6 @@
                 <ColumnDefinition Width="7" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0">
-                <StackPanel.Background>
-                    <ImageBrush ImageSource="/Images/swg-wpf-title-bg.png" Stretch="Fill"/>
-                </StackPanel.Background>
-                <TextBlock Style="{DynamicResource ResourceKey=WindowTitle}" Text="SWGEmu Mod Manager" Margin="-6,1,0,0" Foreground="#FF003953" />
-            </StackPanel>
-
-            <Image Source="/Images/swg-wpf-title-end.png" Grid.Row="0" Grid.Column="1" />
-            <Image Source="/Images/swg-wpf-top-repeat.png" Grid.Row="0" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
-            <Image Source="/Images/swg-wpf-top-right-accent.png" Grid.Row="0" Grid.Column="3" />
-
             <Grid Grid.Row="1" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="25" />
@@ -71,10 +180,10 @@
             <Image Source="/Images/swg-wpf-top-toolbar-title-end.png" Grid.Row="1" Grid.Column="1" />
             <Image Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="1" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
             <Image Source="/Images/swg-wpf-top-toolbar-right.png" Grid.Row="1" Grid.Column="3" />
-            <Image Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="2" Stretch="Fill" Grid.ColumnSpan="4" />
+            <Image Grid.Column="0" Source="/Images/swg-wpf-top-toolbar-repeat-right.png" Grid.Row="2" Stretch="Fill" Grid.ColumnSpan="4" />
         </Grid>
 
-        <Image Source="/Images/swg-wpf-top-right.png" Grid.Row="0" Grid.Column="2" />
+        <uc:TitleBarRightCorner Grid.Row="0" Grid.Column="2"/>
 
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
@@ -122,12 +231,17 @@
 
         <Grid Grid.Row="1" Grid.Column="1" Background="#FF00404C">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20" />
+                <RowDefinition Height="25" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="20" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Menu Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Menu Grid.Column="0" Grid.Row="0" Margin="0 5 0 0">
                 <MenuItem Header="_Config">
                     <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
                 </MenuItem>
@@ -136,7 +250,32 @@
                 </MenuItem>
             </Menu>
 
-            <Border Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" >
+                    <ComboBox SelectedIndex="{Binding TotalItems}" Margin="0 0 10 0">
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>30</ComboBoxItem>
+                        <ComboBoxItem>40</ComboBoxItem>
+                        <ComboBoxItem>50</ComboBoxItem>
+                    </ComboBox>
+                    <Button Style="{DynamicResource SWGButton2}" Command="{Binding NextPageButton}" Content="Next Page" Margin="0 0 10 0" Visibility="{Binding NextPageButtonVisibility}" />
+                    <Button Style="{DynamicResource SWGButton2}" Command="{Binding PreviousPageButton}" Content="Previous Page" Margin="0 0 10 0" Visibility="{Binding PreviousPageButtonVisibility}" />
+                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding SortOrder}">
+                        <ComboBoxItem>Ascending</ComboBoxItem>
+                        <ComboBoxItem>Descending</ComboBoxItem>
+                    </ComboBox>
+                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="75" Height="20" SelectedIndex="{Binding SortType}">
+                        <ComboBoxItem>Name</ComboBoxItem>
+                        <ComboBoxItem>Author</ComboBoxItem>
+                        <ComboBoxItem>Version</ComboBoxItem>
+                        <ComboBoxItem>Downloads</ComboBoxItem>
+                        <ComboBoxItem>Released</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
                 <Grid>
                     <Border Background="#FF00404C" ClipToBounds="True" CornerRadius="4" Margin="4,4,26,4">
                         <Border Background="Transparent" BorderBrush="#FF00232c" BorderThickness="35 40 35 40" Margin="-40" CornerRadius="4">
@@ -148,6 +287,34 @@
                     <uc:ModList></uc:ModList>
                 </Grid>
             </Border>
+
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0 0 0" >
+                <StackPanel Visibility="{Binding Path=ProgressBarVisibility}" Margin="0 0 0 0">
+                    <Label Margin="2 0 0 0" Content="{Binding ProgressBarStatusLabel, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Grid>
+                        <ProgressBar Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" Height="15" 
+                            Value="{Binding Path=ProgressBarPercentage}" Margin="5 0 5 0" />
+
+                        <!-- Progress bar percentage based on a value of 1000, so use converter to divide by 10 -->
+                        <TextBlock Text="{Binding Path=ProgressBarPercentage, StringFormat={}{0:0}%, 
+                            Converter={StaticResource ResourceKey=MathConverter}, ConverterParameter=/10}" 
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="{Binding FilterMargin}">
+                    <Button Command="{Binding FilterNameButton}" Style="{StaticResource SWGButton}" Margin="0 0 10 0">Search</Button>
+                    <Grid>
+                        <TextBox Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="20"/>
+                        <TextBlock Text="{Binding FilterWatermark}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockPlaceholder}"/>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
