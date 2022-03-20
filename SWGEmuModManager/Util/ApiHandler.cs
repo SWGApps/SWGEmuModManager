@@ -54,6 +54,13 @@ internal class ApiHandler : MainWindowViewModelResponses
                ?? new PaginatedResponse<List<Mod>>();
     }
 
+    public static async Task<PaginatedResponse<List<Mod>>> GetModsCacheAsync()
+    {
+        return await GetDeserializedResponse<PaginatedResponse<List<Mod>>>
+            (new Uri($"{_apiUrl}/Mods/1/5/0/0/null"))
+               ?? new PaginatedResponse<List<Mod>>();
+    }
+
     public static async Task<Response<object>> AddDownloadAsync(int id)
     {
         return await GetDeserializedResponse<Response<object>>

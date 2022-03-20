@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace SWGEmuModManager.ViewModels;
@@ -6,6 +7,7 @@ namespace SWGEmuModManager.ViewModels;
 internal class MainWindowViewModelProperties : MainWindowViewModelResponses
 {
     private ObservableCollection<ModsDisplay>? _modList;
+    private List<Mod>? _modListCache;
     private int? _progressBarPercentage;
     private Visibility? _progessBarVisibility;
     private string? _progressBarStatusLabel;
@@ -38,6 +40,12 @@ internal class MainWindowViewModelProperties : MainWindowViewModelResponses
             SetProperty(field: ref _modList, value);
             MainWindowViewModel.OnModListUpdated(this);
         }
+    }
+
+    public List<Mod>? ModListCache
+    {
+        get => _modListCache;
+        set => SetProperty(ref _modListCache, value);
     }
 
     public int? ProgressBarPercentage

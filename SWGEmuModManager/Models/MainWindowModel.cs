@@ -116,23 +116,43 @@ internal static class MainWindowModel
     }
 
     public static List<string> GetConflictNames(List<int> conflictList, 
-        List<MainWindowViewModelResponses.ModsDisplay> modList, int id)
+        List<MainWindowViewModelResponses.Mod> modList)
     {
         List<int> conflicts = CheckConflictList(conflictList);
-
         List<string> conflictStrings = new();
-
         conflicts.ForEach(conflict =>
         {
             conflictStrings.Add(
             modList!
-                    .Where(x => x.Id == id)
+                    .Where(x => x.Id == conflict)
                     .Select(x => x.Name)
                     .FirstOrDefault()!
             );
         });
 
         return conflictStrings;
+    }
+
+    public static bool HasFolderConflict(List<MainWindowViewModelResponses.Mod> mods, int modToInstall)
+    {
+        ConfigFile? config = ConfigFile.GetConfig();
+
+        if (config!.SwgDirectory is null)
+        {
+            App.log.Error("Missing SWG Directory! Ensure it is set!");
+        }
+
+        List<string>? fileList = mods
+            .Where(mod => mod.Id == modToInstall)
+            .Select(mod => mod.FileList)
+            .First();
+
+        foreach (string file in fileList!)
+        {
+            if (File.Exists(Path.Join(config.SwgDirectory, file))) return true;
+        }
+
+        return false;
     }
 
     public static bool ModIsInstalled(int id)

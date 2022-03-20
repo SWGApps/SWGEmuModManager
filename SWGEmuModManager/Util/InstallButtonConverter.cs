@@ -11,8 +11,7 @@ namespace SWGEmuModManager.Util
         {
             if (MainWindowModel.ModIsInstalled((int)values[1])) return "Uninstall";
 
-            // Return original value (Install)
-            return values[0];
+            return "Install";
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

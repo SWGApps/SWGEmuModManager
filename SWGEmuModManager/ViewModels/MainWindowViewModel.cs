@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * ToDo:
+ *
+ * Make pagination local?
+ *
+ * Resolve issue with SSL cert, likely just needs an approved signed cert in the API
+ *
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,6 +34,8 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     public MainWindowViewModel()
     {
         StartPage = 1;
+
+        // Setting this will refresh the mod display
         TotalItems = 0;
 
         Task.Run(InitializeAsync);
@@ -48,7 +59,10 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     private async Task InitializeAsync()
     {
         ProgressBarVisibility = Visibility.Collapsed;
-        await RefreshModDisplay();
+
+        PaginatedResponse<List<Mod>> mods = await ApiHandler.GetModsCacheAsync();
+        ModListCache = mods.Data;
+
         InstallButtonText = "Install";
         FilterWatermark = "Filter By Name";
 
@@ -147,11 +161,19 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         // if conflicts are found
         ConflictContinue = true;
 
-        List<string> conflictNames = MainWindowModel.GetConflictNames(installResponse.Data!.ConflictList!, ModList!.ToList(), id);
+        List<string> conflictNames = MainWindowModel.GetConflictNames
+            (installResponse.Data!.ConflictList!, ModListCache!.ToList());
 
         if (conflictNames.Count > 0)
         {
             new ConflictDialogWindow(conflictNames).ShowDialog();
+        }
+
+        if (MainWindowModel.HasFolderConflict(ModListCache!, id))
+        {
+            System.Windows.Forms.MessageBox.Show
+                ("Non-mod manager controlled file conflict detected! " +
+                 "Please uninstall all manually installed mods before using the mod manager!");
         }
 
         if (!ConflictContinue) return;
