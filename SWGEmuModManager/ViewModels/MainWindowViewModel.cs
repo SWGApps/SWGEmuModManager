@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,6 +31,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     public bool ConflictContinue { get; set; }
     public IAsyncRelayCommand NextPageButton { get; set; }
     public IAsyncRelayCommand PreviousPageButton { get; set; }
+    public IRelayCommand SourceButton { get; set; }
 
     public MainWindowViewModel()
     {
@@ -47,6 +49,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         FilterNameButton = new AsyncRelayCommand(RefreshModDisplay);
         NextPageButton = new AsyncRelayCommand(NextPage);
         PreviousPageButton = new AsyncRelayCommand(PreviousPage);
+        SourceButton = new RelayCommand<string>(GoToSourcePage);
 
         MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
         ZipArchiveExtension.OnInstallStarted += InstallStarted;
@@ -272,6 +275,15 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     private void ClickedCancelButton()
     {
         ConflictContinue = false;
+    }
+
+    private void GoToSourcePage(string? url)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
     }
 
     internal static void WatermarkIntercept(MainWindowViewModelProperties vmp)
