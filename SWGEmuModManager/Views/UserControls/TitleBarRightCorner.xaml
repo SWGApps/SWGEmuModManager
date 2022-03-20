@@ -5,11 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="166" MouseDown="UserControl_MouseDown">
-    <Grid>
-        <Button Command="{Binding CloseButton}" Padding="0" 
-            Margin="0" BorderThickness="0" Background="Transparent" >
-
-            <Image Source="/Images/swg-wpf-top-right.png" />
+    <Grid UseLayoutRounding="True">
+        <Button Command="{Binding CloseButton}" Padding="0" Margin="0" BorderThickness="0" Background="Transparent">
+            <Image>
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Setter Property="Source" Value="/SWGEmuModManager;component/Images/swg-wpf-top-right.png"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Source" Value="/SWGEmuModManager;component/Images/swg-wpf-top-right-hover.png"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
         </Button>
     </Grid>
 </UserControl>
