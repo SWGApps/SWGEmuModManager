@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="166" MouseDown="UserControl_MouseDown">
-    <Grid>
+    <Grid UseLayoutRounding="True">
         <Button Command="{Binding CloseButton}" Padding="0" 
             Margin="0" BorderThickness="0" Background="Transparent" >
 
