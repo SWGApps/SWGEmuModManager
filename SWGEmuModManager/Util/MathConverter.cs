@@ -10,7 +10,7 @@ namespace SWGEmuModManager.Util
         {
             if (value is not null && parameter is not null)
             {
-                string param = (string) parameter;
+                string param = (string)parameter;
 
                 if (param.Contains('/'))
                     return (System.Convert.ToDouble(value) / System.Convert.ToDouble(param.Split('/')[1])).ToString(culture);

@@ -1,5 +1,15 @@
-﻿using System;
+﻿/*
+ * ToDo:
+ *
+ * Make pagination local?
+ *
+ * Resolve issue with SSL cert, likely just needs an approved signed cert in the API
+ *
+ */
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,10 +31,13 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     public bool ConflictContinue { get; set; }
     public IAsyncRelayCommand NextPageButton { get; set; }
     public IAsyncRelayCommand PreviousPageButton { get; set; }
+    public IRelayCommand SourceButton { get; set; }
 
     public MainWindowViewModel()
     {
         StartPage = 1;
+
+        // Setting this will refresh the mod display
         TotalItems = 0;
 
         Task.Run(InitializeAsync);
@@ -36,6 +49,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         FilterNameButton = new AsyncRelayCommand(RefreshModDisplay);
         NextPageButton = new AsyncRelayCommand(NextPage);
         PreviousPageButton = new AsyncRelayCommand(PreviousPage);
+        SourceButton = new RelayCommand<string>(GoToSourcePage);
 
         MainWindowModel.OnDownloadProgressUpdated += DownloadProgressUpdated;
         ZipArchiveExtension.OnInstallStarted += InstallStarted;
@@ -48,7 +62,10 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     private async Task InitializeAsync()
     {
         ProgressBarVisibility = Visibility.Collapsed;
-        await RefreshModDisplay();
+
+        PaginatedResponse<List<Mod>> mods = await ApiHandler.GetModsCacheAsync();
+        ModListCache = mods.Data;
+
         InstallButtonText = "Install";
         FilterWatermark = "Filter By Name";
 
@@ -147,11 +164,19 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         // if conflicts are found
         ConflictContinue = true;
 
-        List<string> conflictNames = MainWindowModel.GetConflictNames(installResponse.Data!.ConflictList!, ModList!.ToList(), id);
+        List<string> conflictNames = MainWindowModel.GetConflictNames
+            (installResponse.Data!.ConflictList!, ModListCache!.ToList());
 
         if (conflictNames.Count > 0)
         {
             new ConflictDialogWindow(conflictNames).ShowDialog();
+        }
+
+        if (MainWindowModel.HasFolderConflict(ModListCache!, id))
+        {
+            System.Windows.Forms.MessageBox.Show
+                ("Non-mod manager controlled file conflict detected! " +
+                 "Please uninstall all manually installed mods before using the mod manager!");
         }
 
         if (!ConflictContinue) return;
@@ -250,6 +275,15 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
     private void ClickedCancelButton()
     {
         ConflictContinue = false;
+    }
+
+    private void GoToSourcePage(string? url)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
     }
 
     internal static void WatermarkIntercept(MainWindowViewModelProperties vmp)

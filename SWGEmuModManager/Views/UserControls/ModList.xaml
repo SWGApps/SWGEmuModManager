@@ -190,10 +190,8 @@
                                             </Button.Content>
                                         </Button>
 
-                                        <Button Style="{StaticResource SWGButton}">
-                                            <Hyperlink NavigateUri="{Binding Source}" RequestNavigate="Hyperlink_RequestNavigate">
-                                                Source
-                                            </Hyperlink>
+                                        <Button Style="{StaticResource SWGButton}" Command="{Binding DataContext.SourceButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Source}">
+                                            Source
                                         </Button>
                                     </StackPanel>
                                 </Grid>

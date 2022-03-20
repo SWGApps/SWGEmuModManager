@@ -9,10 +9,16 @@ namespace SWGEmuModManager.Util
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (MainWindowModel.ModIsInstalled((int)values[1])) return "Uninstall";
+            try
+            {
+                if (MainWindowModel.ModIsInstalled(System.Convert.ToInt32(values[1]))) return "Uninstall";
+            }
+            catch (InvalidCastException e)
+            {
+                App.log.Warn(e.Message);
+            }
 
-            // Return original value (Install)
-            return values[0];
+            return "Install";
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
