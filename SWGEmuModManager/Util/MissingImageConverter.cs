@@ -11,7 +11,7 @@ internal class MissingImageConverter : IValueConverter
     {
         if (string.IsNullOrWhiteSpace((string)value))
         {
-            return "/no-image-available.png";
+            return "/Images/swg-logo-no-image.png";
         }
 
         return value;
