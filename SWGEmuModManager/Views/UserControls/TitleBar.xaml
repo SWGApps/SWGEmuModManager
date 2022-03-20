@@ -5,6 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="19" d:DesignWidth="800" MouseDown="UserControl_MouseDown">
+
+    <UserControl.Resources>
+        <Style x:Key="WindowTitle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#FF003953"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Margin" Value="-6,5,0,0"/>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid UseLayoutRounding="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="19" />
@@ -23,7 +34,7 @@
             <Grid.Background>
                 <ImageBrush ImageSource="/SWGEmuModManager;component/Images/swg-wpf-title-bg.png" Stretch="Fill"/>
             </Grid.Background>
-            <TextBlock Text="SWGEmu Mod Manager" Margin="-6,1,0,0" Foreground="#FF003953" />
+            <TextBlock Text="SWGEMU MOD MANAGER" Style="{DynamicResource WindowTitle}"/>
         </Grid>
 
         <Image Source="/SWGEmuModManager;component/Images/swg-wpf-title-end.png" Grid.Row="0" Grid.Column="1" />

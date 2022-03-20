@@ -60,45 +60,12 @@
         </Style>
 
         <Style x:Key="SWGButton" TargetType="{x:Type Button}">
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="#FF70d9df"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Grid>
-                            <Polygon 
-                                x:Name="poly"
-                                Points="0,0 55,0 60,5 60,18 5,18 0,13"  
-                                Stroke="#FF489DB2"
-                                StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Polygon.Fill>
-                                    <SolidColorBrush Color="#FF093F4B"/>
-                                </Polygon.Fill>
-                            </Polygon>
-                            <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Fill" TargetName="poly" Value="#FF4adcf3"/>
-                                <Setter Property="Foreground" Value="#FF0e3d45"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Fill" TargetName="poly" Value="#FF093F4B"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Fill" TargetName="poly" Value="#FF10c3d7"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="SWGButton2" TargetType="{x:Type Button}">
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Foreground" Value="#FF70d9df"/>
+            <Setter Property="FontSize" Value="10"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -120,15 +87,29 @@
                                 <Setter Property="Foreground" Value="#FF0e3d45"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Fill" TargetName="poly" Value="#FF093F4B"/>
+                                <Setter Property="Fill" TargetName="poly" Value="#FF0cc9dd"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Fill" TargetName="poly" Value="#FF10c3d7"/>
+                                <Setter Property="Fill" TargetName="poly" Value="#FF5f949f"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <Style x:Key="SWGButtonText" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Foreground" Value="#FF70D9DF" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                    <Setter Property="Foreground" Value="#FF003c40" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SWGNavButton" TargetType="{x:Type Button}" BasedOn="{StaticResource SWGButton}">
+            <Setter Property="FontSize" Value="9"/>
         </Style>
 
         <Style x:Key="TextBlockPlaceholder" TargetType="{x:Type TextBlock}">
@@ -237,45 +218,63 @@
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Menu Grid.Column="0" Grid.Row="0" Margin="0 5 0 0">
-                <MenuItem Header="_Config">
-                    <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
-                </MenuItem>
-                <MenuItem Header="_Dev">
-                    <MenuItem Header="Generate Mod Manifest" Command="{Binding Path=GenerateModManifestMenuItem}"></MenuItem>
-                </MenuItem>
-            </Menu>
+            <Grid Grid.Column="0" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Menu Grid.Column="0" Grid.Row="0" Margin="0 5 0 0">
+                    <MenuItem Header="_Config">
+                        <MenuItem Header="Set SWG Directory" Command="{Binding Path=SetSwgDirectoryMenuItem}" />
+                    </MenuItem>
+                    <MenuItem Header="_Dev">
+                        <MenuItem Header="Generate Mod Manifest" Command="{Binding Path=GenerateModManifestMenuItem}"></MenuItem>
+                    </MenuItem>
+                </Menu>
 
-            <StackPanel Grid.Row="0" Grid.Column="1">
-                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" >
-                    <ComboBox SelectedIndex="{Binding TotalItems}" Margin="0 0 10 0">
-                        <ComboBoxItem>10</ComboBoxItem>
-                        <ComboBoxItem>20</ComboBoxItem>
-                        <ComboBoxItem>30</ComboBoxItem>
-                        <ComboBoxItem>40</ComboBoxItem>
-                        <ComboBoxItem>50</ComboBoxItem>
-                    </ComboBox>
-                    <Button Style="{DynamicResource SWGButton2}" Command="{Binding NextPageButton}" Content="Next Page" Margin="0 0 10 0" Visibility="{Binding NextPageButtonVisibility}" />
-                    <Button Style="{DynamicResource SWGButton2}" Command="{Binding PreviousPageButton}" Content="Previous Page" Margin="0 0 10 0" Visibility="{Binding PreviousPageButtonVisibility}" />
-                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding SortOrder}">
-                        <ComboBoxItem>Ascending</ComboBoxItem>
-                        <ComboBoxItem>Descending</ComboBoxItem>
-                    </ComboBox>
-                    <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="75" Height="20" SelectedIndex="{Binding SortType}">
-                        <ComboBoxItem>Name</ComboBoxItem>
-                        <ComboBoxItem>Author</ComboBoxItem>
-                        <ComboBoxItem>Version</ComboBoxItem>
-                        <ComboBoxItem>Downloads</ComboBoxItem>
-                        <ComboBoxItem>Released</ComboBoxItem>
-                    </ComboBox>
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                    <Grid>
+                        <TextBox Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="20"/>
+                        <TextBlock Text="{Binding FilterWatermark}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockPlaceholder}"/>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                    <Button Command="{Binding FilterNameButton}" Style="{StaticResource SWGNavButton}" Margin="10 0 0 0">
+                        <TextBlock Style="{DynamicResource SWGButtonText}">Search</TextBlock>
+                    </Button>
                 </StackPanel>
-            </StackPanel>
 
-            <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
+                <StackPanel Grid.Row="0" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox SelectedIndex="{Binding TotalItems}" Margin="0 0 10 0">
+                            <ComboBoxItem>10</ComboBoxItem>
+                            <ComboBoxItem>20</ComboBoxItem>
+                            <ComboBoxItem>30</ComboBoxItem>
+                            <ComboBoxItem>40</ComboBoxItem>
+                            <ComboBoxItem>50</ComboBoxItem>
+                        </ComboBox>
+                        <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="100" Height="20" SelectedIndex="{Binding SortOrder}">
+                            <ComboBoxItem>Ascending</ComboBoxItem>
+                            <ComboBoxItem>Descending</ComboBoxItem>
+                        </ComboBox>
+                        <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0 0 10 0" Width="75" Height="20" SelectedIndex="{Binding SortType}">
+                            <ComboBoxItem>Name</ComboBoxItem>
+                            <ComboBoxItem>Author</ComboBoxItem>
+                            <ComboBoxItem>Version</ComboBoxItem>
+                            <ComboBoxItem>Downloads</ComboBoxItem>
+                            <ComboBoxItem>Released</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Column="0" Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
                 <Grid>
                     <Border Background="#FF00404C" ClipToBounds="True" CornerRadius="4" Margin="4,4,26,4">
                         <Border Background="Transparent" BorderBrush="#FF00232c" BorderThickness="35 40 35 40" Margin="-40" CornerRadius="4">
@@ -288,8 +287,12 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0 0 0" >
-                <StackPanel Visibility="{Binding Path=ProgressBarVisibility}" Margin="0 0 0 0">
+            <Grid Grid.Row="2" Grid.Column="0" Height="32" Margin="0,0,0,-13">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="210" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Visibility="{Binding Path=ProgressBarVisibility}" Grid.Column="0">
                     <Label Margin="2 0 0 0" Content="{Binding ProgressBarStatusLabel, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Grid>
@@ -303,17 +306,19 @@
                     </Grid>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="{Binding FilterMargin}">
-                    <Button Command="{Binding FilterNameButton}" Style="{StaticResource SWGButton}" Margin="0 0 10 0">Search</Button>
-                    <Grid>
-                        <TextBox Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="20"/>
-                        <TextBlock Text="{Binding FilterWatermark}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockPlaceholder}"/>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                </StackPanel>
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{DynamicResource SWGNavButton}" Command="{Binding PreviousPageButton}" Visibility="{Binding PreviousPageButtonVisibility}" Grid.Column="0">
+                        <TextBlock Style="{DynamicResource SWGButtonText}">Previous Page</TextBlock>
+                    </Button>
+
+                    <Button Style="{DynamicResource SWGNavButton}" Command="{Binding NextPageButton}" Visibility="{Binding NextPageButtonVisibility}" Grid.Column="1">
+                        <TextBlock Style="{DynamicResource SWGButtonText}">Next Page</TextBlock>
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
