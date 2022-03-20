@@ -26,6 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\swg-logo-no-image.png" />
     <None Remove="Images\swg-wpf-bottom-left-accent.png" />
     <None Remove="Images\swg-wpf-bottom-left.png" />
     <None Remove="Images\swg-wpf-bottom-repeat.png" />
@@ -50,7 +51,6 @@
     <None Remove="Images\swg-wpf-top-toolbar-right.png" />
     <None Remove="Images\swg-wpf-top-toolbar-title-end.png" />
     <None Remove="log4net.config" />
-    <None Remove="no-image-available.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,6 +68,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\swg-logo-no-image.png" />
     <Resource Include="Images\swg-wpf-bottom-left-accent.png" />
     <Resource Include="Images\swg-wpf-bottom-left.png" />
     <Resource Include="Images\swg-wpf-bottom-repeat.png" />
@@ -91,7 +92,6 @@
     <Resource Include="Images\swg-wpf-top-toolbar-repeat.png" />
     <Resource Include="Images\swg-wpf-top-toolbar-right.png" />
     <Resource Include="Images\swg-wpf-top-toolbar-title-end.png" />
-    <Resource Include="no-image-available.png" />
   </ItemGroup>
 
   <ItemGroup>
