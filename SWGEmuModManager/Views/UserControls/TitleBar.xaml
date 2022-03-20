@@ -21,13 +21,13 @@
 
         <Grid Grid.Row="0" Grid.Column="0">
             <Grid.Background>
-                <ImageBrush ImageSource="/Images/swg-wpf-title-bg.png" Stretch="Fill"/>
+                <ImageBrush ImageSource="/SWGEmuModManager;component/Images/swg-wpf-title-bg.png" Stretch="Fill"/>
             </Grid.Background>
             <TextBlock Text="SWGEmu Mod Manager" Margin="-6,1,0,0" Foreground="#FF003953" />
         </Grid>
 
-        <Image Source="/Images/swg-wpf-title-end.png" Grid.Row="0" Grid.Column="1" />
-        <Image Source="/Images/swg-wpf-top-repeat.png" Grid.Row="0" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
-        <Image Source="/Images/swg-wpf-top-right-accent.png" Grid.Row="0" Grid.Column="3" />
+        <Image Source="/SWGEmuModManager;component/Images/swg-wpf-title-end.png" Grid.Row="0" Grid.Column="1" />
+        <Image Source="/SWGEmuModManager;component/Images/swg-wpf-top-repeat.png" Grid.Row="0" Grid.Column="2" Stretch="Fill" StretchDirection="UpOnly" />
+        <Image Source="/SWGEmuModManager;component/Images/swg-wpf-top-right-accent.png" Grid.Row="0" Grid.Column="3" />
     </Grid>
 </UserControl>

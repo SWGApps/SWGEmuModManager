@@ -9,7 +9,7 @@
         <Button Command="{Binding CloseButton}" Padding="0" 
             Margin="0" BorderThickness="0" Background="Transparent" >
 
-            <Image Source="/Images/swg-wpf-top-right.png" />
+            <Image Source="/SWGEmuModManager;component/Images/swg-wpf-top-right.png" />
         </Button>
     </Grid>
 </UserControl>
