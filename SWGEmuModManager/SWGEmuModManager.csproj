@@ -42,6 +42,7 @@
     <None Remove="Images\swg-wpf-top-left.png" />
     <None Remove="Images\swg-wpf-top-repeat.png" />
     <None Remove="Images\swg-wpf-top-right-accent.png" />
+    <None Remove="Images\swg-wpf-top-right-hover.png" />
     <None Remove="Images\swg-wpf-top-right.png" />
     <None Remove="Images\swg-wpf-top-toolbar-left.png" />
     <None Remove="Images\swg-wpf-top-toolbar-repeat-right.png" />
@@ -83,6 +84,7 @@
     <Resource Include="Images\swg-wpf-top-left.png" />
     <Resource Include="Images\swg-wpf-top-repeat.png" />
     <Resource Include="Images\swg-wpf-top-right-accent.png" />
+    <Resource Include="Images\swg-wpf-top-right-hover.png" />
     <Resource Include="Images\swg-wpf-top-right.png" />
     <Resource Include="Images\swg-wpf-top-toolbar-left.png" />
     <Resource Include="Images\swg-wpf-top-toolbar-repeat-right.png" />
