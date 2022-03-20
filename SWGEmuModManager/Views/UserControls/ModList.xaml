@@ -21,28 +21,31 @@
         </Style>
 
         <Style x:Key="ModTitle" TargetType="{x:Type TypeName=TextBlock}">
-            <Setter Property="FontFamily" Value="Bahnschrift Condensed"/>
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="#FFFFFFFF"/>
         </Style>
 
         <Style x:Key="ModDetailsPrefix" TargetType="{x:Type TypeName=TextBlock}">
-            <Setter Property="Foreground" Value="#66FFFFFF"/>
-            <Setter Property="FontFamily" Value="Bahnschrift"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Foreground" Value="#FF55b4ba"/>
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0 2 1 0"/>
         </Style>
 
         <Style x:Key="ModDetailsIcon" TargetType="{x:Type TypeName=fa:FontAwesome}">
-            <Setter Property="Foreground" Value="#66FFFFFF"/>
+            <Setter Property="Foreground" Value="#FF55b4ba"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="0 0 5 0"/>
         </Style>
 
         <Style x:Key="ModDetailsValue" TargetType="{x:Type TypeName=TextBlock}">
-            <Setter Property="Foreground" Value="#99FFFFFF"/>
+            <Setter Property="Foreground" Value="#FFb6e7eb"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontFamily" Value="Bahnschrift"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontSize" Value="10"/>
         </Style>
 
         <Style x:Key="ModDetailsStack" TargetType="{x:Type TypeName=StackPanel}">
@@ -50,17 +53,27 @@
             <Setter Property="Margin" Value="14 0 0 0"/>
         </Style>
 
+        <Style x:Key="ModDescription" TargetType="{x:Type TypeName=TextBlock}">
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#FFb6e9ed"/>
+        </Style>
+
         <Style x:Key="SWGButton" TargetType="{x:Type Button}">
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="#FF70d9df"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Grid>
                             <Polygon 
                                 x:Name="poly"
-                                Points="0,0 95,0 100,5 100,25 5,25 0,20"  
+                                Points="0,0 85,0 90,5 90,18 5,18 0,13"  
                                 Stroke="#FF489DB2"
                                 StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Polygon.Fill>
@@ -75,17 +88,16 @@
                                 <Setter Property="Foreground" Value="#FF0e3d45"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Fill" TargetName="poly" Value="#FF093F4B"/>
+                                <Setter Property="Fill" TargetName="poly" Value="#FF0cc9dd"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Fill" TargetName="poly" Value="#FF10c3d7"/>
+                                <Setter Property="Fill" TargetName="poly" Value="#FF5f949f"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-
     </UserControl.Resources>
 
     <Grid>
@@ -97,7 +109,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Row="0" Grid.Column="0" Padding="0,4,0,4">
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Padding="0,6,0,5">
             <ItemsControl ItemsSource="{Binding Path=ModList}" Padding="12,4,18,6">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -113,19 +125,17 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="145" />
+                                <RowDefinition Height="120" />
                             </Grid.RowDefinitions>
 
-                            <Border Margin="0 5" Grid.Column="0" BorderThickness="1" BorderBrush="DarkCyan">
-                                <Border.Background>
-                                    <ImageBrush/>
-                                </Border.Background>
-                                <Grid>
+                            <Border Margin="0 5" Grid.Column="0" BorderThickness="1" BorderBrush="#FF53ccd4" Background="#FF025b6d" CornerRadius="8">
+                                <Grid ClipToBounds="True">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="125" />
+                                        <ColumnDefinition Width="108" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="114" />
                                     </Grid.ColumnDefinitions>
+
 
                                     <Image x:Name="ModBanner" Grid.Column="0" Source="{Binding Path=BannerUrl, 
                                         Converter={StaticResource MissingImageConverter}}" Style="{DynamicResource ResourceKey=ModBannerImage}" />
@@ -135,7 +145,7 @@
                                             <TextBlock Style="{DynamicResource ResourceKey=ModTitle}" Text="{Binding Path=Name}"/>
                                             <StackPanel Style="{DynamicResource ResourceKey=ModDetailsStack}" VerticalAlignment="Bottom" Margin="4 0 0 2">
                                                 <TextBlock Style="{DynamicResource ResourceKey=ModDetailsPrefix}">v</TextBlock>
-                                                <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Version}"/>
+                                                <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Version}" Margin="0 2 0 0"/>
                                             </StackPanel>
                                         </StackPanel>
 
@@ -152,7 +162,7 @@
                                                 </StackPanel>
 
                                                 <StackPanel Style="{DynamicResource ResourceKey=ModDetailsStack}">
-                                                    <fa:FontAwesome Style="{DynamicResource ResourceKey=ModDetailsIcon}" Icon="Download" />
+                                                    <fa:FontAwesome Style="{DynamicResource ResourceKey=ModDetailsIcon}" Icon="Download" Margin="0 1 5 0"/>
                                                     <TextBlock Style="{DynamicResource ResourceKey=ModDetailsValue}" Text="{Binding Path=Downloads}"/>
                                                 </StackPanel>
 
@@ -163,7 +173,7 @@
                                             </StackPanel>
 
                                             <StackPanel>
-                                                <TextBlock Text="{Binding Path=Description}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Path=Description}" TextWrapping="Wrap" Style="{DynamicResource ResourceKey=ModDescription}"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>

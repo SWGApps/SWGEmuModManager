@@ -66,6 +66,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="#FF70d9df"/>
             <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -274,14 +275,20 @@
                 </StackPanel>
             </Grid>
 
-            <Border Grid.Column="0" Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="4">
+            <Border Grid.Column="0" Grid.Row="1" BorderBrush="#FF4DBFC9" BorderThickness="1" CornerRadius="8">
                 <Grid>
-                    <Border Background="#FF00404C" ClipToBounds="True" CornerRadius="4" Margin="4,4,26,4">
-                        <Border Background="Transparent" BorderBrush="#FF00232c" BorderThickness="35 40 35 40" Margin="-40" CornerRadius="4">
-                            <Border.Effect>
-                                <DropShadowEffect ShadowDepth="0" BlurRadius="80"/>
-                            </Border.Effect>
-                        </Border>
+                    <Border Background="#FF027288" CornerRadius="8" Margin="4,6,26,4" Padding="1">
+                        <Grid ClipToBounds="True" Margin="0">
+                            <Grid.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=GridContent}" />
+                            </Grid.OpacityMask>
+                            <Border x:Name="GridContent" CornerRadius="8" Background="#FF027288"/>
+                            <Border Background="Transparent" BorderBrush="#FF005366" BorderThickness="30" Margin="-30" CornerRadius="22">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0" BlurRadius="30"/>
+                                </Border.Effect>
+                            </Border>
+                        </Grid>
                     </Border>
                     <uc:ModList></uc:ModList>
                 </Grid>
