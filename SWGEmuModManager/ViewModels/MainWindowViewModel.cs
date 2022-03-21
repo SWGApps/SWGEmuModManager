@@ -5,6 +5,8 @@
  *
  * Resolve issue with SSL cert, likely just needs an approved signed cert in the API
  *
+ * Check for dependency files on uninstall
+ *
  */
 
 using System;

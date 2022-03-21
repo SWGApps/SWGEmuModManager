@@ -62,7 +62,7 @@
             <Setter Property="Foreground" Value="#FFb6e9ed"/>
         </Style>
 
-        <Style x:Key="SWGButton" TargetType="{x:Type Button}">
+        <Style x:Key="SwgButton" TargetType="{x:Type Button}">
             <Setter Property="FontFamily" Value="Verdana"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -80,7 +80,7 @@
                                 Stroke="#FF489DB2"
                                 StrokeThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Polygon.Fill>
-                                    <SolidColorBrush Color="#FF093F4B"/>
+                                    <SolidColorBrush Color="#025b6d"/>
                                 </Polygon.Fill>
                             </Polygon>
                             <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}"/>
@@ -102,7 +102,7 @@
             </Setter>
         </Style>
 
-        <Style x:Key="SWGButtonText" TargetType="TextBlock">
+        <Style x:Key="SwgButtonText" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,0,0,2"/>
             <Setter Property="Foreground" Value="#FF70D9DF" />
             <Style.Triggers>
@@ -110,6 +110,10 @@
                     <Setter Property="Foreground" Value="#FF003c40" />
                 </DataTrigger>
             </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SwgNavButton" TargetType="{x:Type Button}" BasedOn="{StaticResource SwgButton}">
+            <Setter Property="FontSize" Value="9"/>
         </Style>
     </UserControl.Resources>
 
@@ -208,17 +212,19 @@
                                         <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0">
                                             <!-- Get data context of ScrollViewer and then bind button -->
                                             <!-- Command Parameter is in the data template's data context -->
-                                            <Button Style="{StaticResource SWGButton}" Command="{Binding Path=DataContext.DownloadModButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Path=Id}">
-                                                <Button.Content>
-                                                    <MultiBinding Converter="{StaticResource InstallButtonConverter}">
-                                                        <Binding Path="DataContext.InstallButtonText" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}" />
-                                                        <Binding Path="Id"></Binding>
-                                                    </MultiBinding>
-                                                </Button.Content>
+                                            <Button Style="{DynamicResource SwgNavButton}" Command="{Binding Path=DataContext.DownloadModButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Path=Id}" Margin="0 0 0 10">
+                                                <TextBlock Style="{StaticResource SwgButtonText}">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding Converter="{StaticResource InstallButtonConverter}">
+                                                            <Binding Path="DataContext.InstallButtonText" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}" />
+                                                            <Binding Path="Id"></Binding>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </Button>
 
-                                            <Button Style="{StaticResource SWGButton}" Command="{Binding DataContext.SourceButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Source}">
-                                                Source
+                                            <Button Style="{DynamicResource SwgNavButton}" Command="{Binding DataContext.SourceButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}" CommandParameter="{Binding Source}">
+                                                <TextBlock Style="{StaticResource SwgButtonText}" Text="Source" />
                                             </Button>
                                         </StackPanel>
                                     </Grid>

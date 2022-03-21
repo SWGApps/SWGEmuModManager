@@ -197,6 +197,11 @@ internal static class MainWindowModel
 
                 await ZipArchiveExtension.UnzipModAsync(modId, archiveName);
             }
+            else
+            {
+                App.log.Error($"URL: {downloadUrl}{archiveName}\n" +
+                    $"URL Request Status Code: {response.StatusCode}");
+            }
         }
     }
 
