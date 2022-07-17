@@ -118,12 +118,7 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
 
             ProgressBarVisibility = Visibility.Visible;
 
-            /*List<int> allowedConflicts = MainWindowModel.CheckConflictList(uninstallResponse.ConflictList);
-
-            allowedConflicts.ForEach(conflict =>
-            {
-                Trace.WriteLine(conflict);
-            });*/
+            MainWindowModel.GetConflictingFiles();
 
             if (!string.IsNullOrEmpty(config.SwgDirectory))
             {
@@ -178,7 +173,10 @@ internal class MainWindowViewModel : MainWindowViewModelProperties
         {
             System.Windows.Forms.MessageBox.Show
                 ("Non-mod manager controlled file conflict detected! " +
-                 "Please uninstall all manually installed mods before using the mod manager!");
+                 "Please uninstall all manually installed mods before using the mod manager!", 
+                    caption: "Detected manually installed mod!");
+
+            return;
         }
 
         if (!ConflictContinue) return;

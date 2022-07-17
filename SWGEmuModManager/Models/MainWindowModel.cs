@@ -115,6 +115,13 @@ internal static class MainWindowModel
         return new List<int>();
     }
 
+    public static List<string> GetConflictingFiles()
+    {
+
+
+        return new List<string>();
+    }
+
     public static List<string> GetConflictNames(List<int> conflictList, 
         List<MainWindowViewModelResponses.Mod> modList)
     {
@@ -186,9 +193,9 @@ internal static class MainWindowModel
 
             if (response.IsSuccessStatusCode)
             {
-                using Stream contentStream = await response.Content.ReadAsStreamAsync();
+                await using Stream contentStream = await response.Content.ReadAsStreamAsync();
 
-                using Stream fileStream = new FileStream(Path.Join(config.SwgDirectory, archiveName),
+                await using Stream fileStream = new FileStream(Path.Join(config.SwgDirectory, archiveName),
                     FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 8192, useAsync: true);
 
                 await DoStreamWriteAsync(contentStream, fileStream, length);

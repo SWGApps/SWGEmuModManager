@@ -13,7 +13,14 @@ internal class ApiHandler : MainWindowViewModelResponses
 
     public static async Task<T?> GetDeserializedResponse<T>(Uri uri)
     {
-        HttpClient client = new();
+        var handler = new HttpClientHandler();
+        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+        handler.ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) =>
+        {
+            return true;
+        };
+
+        HttpClient client = new(handler);
 
         try
         {
